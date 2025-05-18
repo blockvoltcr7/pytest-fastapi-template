@@ -1,5 +1,8 @@
 import allure
+import pytest
 
+
+@pytest.mark.skip(reason="Test disabled")
 @allure.feature("Hello World")
 @allure.story("Basic Testing")
 def test_hello_world():

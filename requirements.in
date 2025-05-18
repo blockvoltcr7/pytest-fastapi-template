@@ -12,6 +12,9 @@ jiter
 openai
 pydantic
 pydantic-core
+pydantic-settings
+python-dotenv
+pytest-asyncio
 requests
 sniffio
 tqdm
