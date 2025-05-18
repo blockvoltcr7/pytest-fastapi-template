@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Testing Rules for Baby Podcast GenAI Project
+
+This document outlines testing requirements for new feature implementations.
+
+## Core Testing Requirements
+
+- All new features must have corresponding tests.
+- Tests must be written using pytest and include Allure reporting features.
+- API tests must be placed in the `tests/` directory with filename `test_*.py`.
+- Tests should include appropriate annotations for Allure reporting.
+
+## Allure Reporting Structure
+
+- Each test module should use `@allure.epic()` to define the high-level area.
+- Test classes should use `@allure.feature()` to define the feature being tested.
+- Test methods should use `@allure.story()` to define the specific test scenario.
+- Use `@allure.severity()` to indicate test importance.
+- All tests should include descriptive steps using Allure's step annotations.
+
+## Example Structure
+
+```python
+import allure
+import pytest
+
+@allure.epic("Core Functionality")
+@allure.feature("Feature Name")
+class TestFeatureName:
+    
+    @allure.story("Basic Functionality")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_basic_functionality(self):
+        """Test description here"""
+        with allure.step("First step description"):
+            # Code for first step
+            pass
+            
+        with allure.step("Verification step"):
+            # Assertion code
+            assert True
+```
+
+## API Testing Requirements
+
+- Use the session fixture for API requests.
+- Include appropriate response attachments.
+- Test both happy path and error conditions.
+- Include clear test descriptions.
+
+## Test Categories
+
+Use pytest markers to categorize tests:
+
+```python
+@pytest.mark.api  # For API tests
+@pytest.mark.integration  # For integration tests
+@pytest.mark.slow  # For slow-running tests
+```
+
+## Running Tests
+
+- Always run tests with Allure reporting enabled:
+  ```
+  pytest --alluredir=allure-results
+  ```
+- Generate the report with:
+  ```
+  allure serve allure-results
+  ```
+
+## AI Assistant Guidelines
+
+When implementing new features, AI assistants should:
+
+1. Identify testable components in the new feature.
+2. Create corresponding test files with proper Allure annotations.
+3. Ensure tests cover both expected behavior and edge cases.
+4. Implement appropriate fixtures for test setup and teardown.
+5. Include detailed steps using `allure.step()`.
+6. Add test data attachments using `allure.attach()`.
+7. Document any test requirements in test docstrings.

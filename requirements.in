@@ -1,0 +1,26 @@
+annotated-types
+anyio
+certifi
+charset-normalizer
+distro
+elevenlabs
+h11
+httpcore
+httpx
+idna
+jiter
+openai
+pydantic
+pydantic-core
+requests
+sniffio
+tqdm
+typing-extensions
+typing-inspection
+urllib3
+websockets
+allure-pytest
+
+# FastAPI
+fastapi
+uvicorn[standard] 

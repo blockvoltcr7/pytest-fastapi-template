@@ -1,0 +1,34 @@
+# Version control
+.git
+.gitignore
+
+# Virtual environments
+.venv
+venv
+env
+
+# Cache
+__pycache__
+*.py[cod]
+*$py.class
+.pytest_cache
+.coverage
+htmlcov
+
+# Test results
+allure-results
+allure-report
+
+# Local development files
+.cursor
+.DS_Store
+*.log
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+README.md
+LICENSE 

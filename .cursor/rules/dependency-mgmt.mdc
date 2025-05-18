@@ -1,0 +1,107 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Dependency Management Rules for Baby Podcast GenAI Project
+
+This document outlines requirements for managing Python dependencies in this project using the uv package manager.
+
+## Core Requirements
+
+- Always use `uv` for package management operations, never use `pip` directly.
+- Virtual environments should be managed using uv's built-in capabilities.
+- Requirements files should be maintained in a clear, organized structure.
+
+## Package Installation
+
+- Use `uv pip install <package>` for installing individual packages.
+- Always update requirements.in after adding new dependencies.
+- Use `uv pip compile requirements.in` to generate/update requirements.txt.
+
+```bash
+# CORRECT
+uv pip install allure-pytest
+
+# INCORRECT
+pip install allure-pytest
+```
+
+## Virtual Environment Management
+
+- Use `uv venv` to create and manage virtual environments.
+- Ensure virtual environments are properly activated before installing or updating packages.
+
+```bash
+# Create a virtual environment
+uv venv
+
+# Activate the environment
+source .venv/bin/activate  # On Unix/macOS
+.venv\Scripts\activate     # On Windows
+```
+
+## Dependency Organization
+
+- Add direct dependencies to requirements.in
+- Never manually edit requirements.txt
+- Group dependencies logically in requirements.in with comments
+- Separate dev dependencies when appropriate
+
+## Dependency Structure
+
+```
+# Core dependencies
+package1
+package2
+
+# Development dependencies
+pytest
+allure-pytest
+
+# Feature-specific dependencies
+feature-package
+```
+
+## Version Pinning
+
+- Pin specific versions for critical dependencies in requirements.in
+- Otherwise, rely on uv's version resolution
+
+```
+# Pinned version example
+openai==1.0.0
+
+# Unpinned example
+requests
+```
+
+## AI Assistant Guidelines
+
+When managing dependencies, AI assistants should:
+
+1. Always recommend and use uv commands, never pip commands.
+2. Update requirements.in when suggesting new dependencies.
+3. Run `uv pip compile requirements.in` after requirements.in changes.
+4. When installing packages for testing only, suggest adding to dev dependencies.
+5. Use `uv pip freeze` for diagnostic purposes only, not for updating requirements.txt.
+6. Check for dependency conflicts before recommending new packages.
+7. Ensure the virtual environment is active when running uv commands.
+
+## Common Commands Reference
+
+```bash
+# Installing packages
+uv pip install <package>
+
+# Installing all packages from requirements.txt
+uv pip install -r requirements.txt
+
+# Adding a package to requirements.in and updating requirements.txt
+uv pip install <package>
+# Then manually add to requirements.in
+uv pip compile requirements.in
+
+# Updating all dependencies
+uv pip compile --upgrade requirements.in
+```
