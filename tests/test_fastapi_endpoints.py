@@ -38,7 +38,7 @@ class TestFastAPIEndpoints:
         
         with allure.step("Verify correct welcome message"):
             assert "message" in data
-            assert data["message"] == "Welcome to Baby Podcast GenAI API"
+            assert data["message"] == "Baby Podcast GenAI API"
     
     
     @allure.story("Hello World Endpoint")

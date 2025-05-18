@@ -1,13 +1,13 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import items as items_router
+from app.api.v1 import api_router
 
-app = FastAPI(title="Baby Podcast GenAI")
+app = FastAPI(title="Baby Podcast GenAI", version="1.0.0")
 
-app.include_router(items_router.router, prefix="/api/v1/items", tags=["items"])
+app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Baby Podcast GenAI API"}
+    return {"message": "Baby Podcast GenAI API"}
 
 # To run this application:
 # Ensure you are in the root directory of the project (baby-podcast-genai)

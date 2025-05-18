@@ -101,7 +101,9 @@ uv pip install -r requirements.txt
 uv pip install <package>
 # Then manually add to requirements.in
 uv pip compile requirements.in
-
 # Updating all dependencies
 uv pip compile --upgrade requirements.in
+
+# Ensuring environment exactly matches requirements.txt (installing, updating, and removing packages as needed)
+uv pip sync requirements.txt
 ```
