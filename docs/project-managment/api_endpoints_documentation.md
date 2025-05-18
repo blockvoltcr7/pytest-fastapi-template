@@ -177,8 +177,12 @@ with open("output.png", "wb") as f:
 
 **Endpoint:** `GET https://api.hedra.com/web-app/public/assets?type=video&ids={{ $json.asset_id }}`
 
-**Authentication:** Custom HTTP Auth (API Key)
-
+**Authentication:** {
+  "headers": {
+    "X-Api-Key": "SECRET",
+    "Content-Type": "application/json"
+  }
+}
 **Purpose:** Retrieves the generated video status and download URL after processing.
 
 ---

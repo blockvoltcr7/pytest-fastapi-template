@@ -1,0 +1,25 @@
+{
+  "campaign_id": "monroviaboy_baby_podcast_001",
+  "topic": "Mon Rovîa music reaction",
+  "script": [
+    {
+      "type": "dialogue",
+      "speaker": "Baby 1",
+      "text": "Yo, I just stumbled upon this artist, Mon Rovîa."
+    },
+    {
+      "type": "dialogue",
+      "speaker": "Baby 2",
+      "text": "Mon Rovîa? Can't say I've heard of him. What's his vibe?"
+    },
+    {
+      "type": "media",
+      "media_kind": "music_clip",
+      "description": "Clip of Mon Rovîa's 'Crooked the Road'"
+    }
+  ],
+  "baby_profiles": {
+    "Baby 1": {"tone": "warm, inviting", "voice_id": "baby_voice_1"},
+    "Baby 2": {"tone": "curious, thoughtful", "voice_id": "baby_voice_2"}
+  }
+} 
