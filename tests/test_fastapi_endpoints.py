@@ -40,6 +40,7 @@ class TestFastAPIEndpoints:
             assert "message" in data
             assert data["message"] == "Welcome to Baby Podcast GenAI API"
     
+    
     @allure.story("Hello World Endpoint")
     @allure.severity(allure.severity_level.NORMAL)
     def test_hello_endpoint(self, session, api_base_url, fastapi_server):

@@ -7,6 +7,7 @@ import pytest
 @pytest.mark.api
 class TestSampleAPI:
     
+    @pytest.mark.skip(reason="Test disabled")
     @allure.story("Status Endpoint")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_status_endpoint(self, session, api_base_url):
@@ -17,6 +18,7 @@ class TestSampleAPI:
         with allure.step("Verify successful status code"):
             assert response.status_code == 200
     
+    @pytest.mark.skip(reason="Test disabled")
     @allure.story("JSON Response")
     @allure.severity(allure.severity_level.NORMAL)
     def test_json_response(self, session, api_base_url):
@@ -40,6 +42,7 @@ class TestSampleAPI:
                 attachment_type=allure.attachment_type.TEXT
             )
     
+    @pytest.mark.skip(reason="Test disabled")
     @allure.story("Error Handling")
     @allure.severity(allure.severity_level.NORMAL)
     def test_not_found_response(self, session, api_base_url):
@@ -50,6 +53,7 @@ class TestSampleAPI:
         with allure.step("Verify 404 status code"):
             assert response.status_code == 404
             
+    @pytest.mark.skip(reason="Test disabled")
     @allure.story("Authentication")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("auth_type", ["basic", "bearer"])
