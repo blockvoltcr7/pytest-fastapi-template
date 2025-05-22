@@ -10,6 +10,7 @@ httpx
 idna
 jiter
 openai
+pillow
 pydantic
 pydantic-core
 pydantic-settings

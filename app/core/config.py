@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     videos_dir: str = "output/videos"
     final_dir: str = "output/final"
     
+    # Video generation polling settings
+    hedra_initial_poll_interval: int = 15      # Start with 15 seconds
+    hedra_max_poll_interval: int = 60          # Max 60 seconds between polls
+    hedra_poll_backoff_factor: float = 1.2     # Increase by 20% each time
+    hedra_max_poll_time: int = 600             # 10 minutes max total time
+    
     model_config = {
         "env_file": ".env",
         "case_sensitive": False,
