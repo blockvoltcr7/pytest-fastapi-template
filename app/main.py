@@ -9,6 +9,10 @@ app.include_router(api_router, prefix="/api/v1")
 async def root():
     return {"message": "GenAI API"}
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "message": "API is running successfully"}
+
 # To run this application:
 # Ensure you are in the root directory of the project
 # Activate your virtual environment: source .venv/bin/activate
