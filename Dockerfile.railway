@@ -15,8 +15,5 @@ COPY . .
 # Create directory for allure results
 RUN mkdir -p allure-results
 
-# Expose port (Railway will set the PORT environment variable)
-EXPOSE $PORT
-
-# Run the FastAPI application
-CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT 
+# Run the FastAPI application with proper PORT variable expansion
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"] 
