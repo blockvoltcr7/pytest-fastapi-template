@@ -30,9 +30,10 @@ This guide provides the **easiest and fastest way** to deploy your FastAPI appli
    | Setting | Value |
    |---------|-------|
    | **Language** | Python 3 |
-   | **Build Command** | `uv pip install -r requirements.txt` |
+   | **Build Command** | `pip install -r requirements.txt` |
    | **Start Command** | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
    | **Plan** | Free (for testing) |
+   | **Health Check Path** | `/health` |
 
 3. **Deploy!**
    - Click **"Create Web Service"**
@@ -41,14 +42,14 @@ This guide provides the **easiest and fastest way** to deploy your FastAPI appli
 
 ### Option 2: Infrastructure as Code (Recommended for production)
 
-Your repo already includes a `render.yaml` file that Render will automatically detect:
+Your repo includes a `render.yaml` file that Render will automatically detect:
 
 ```yaml
 services:
   - type: web
     name: genai-fastapi
     runtime: python
-    buildCommand: uv pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
@@ -75,22 +76,22 @@ Once deployed, test these endpoints:
 4. **API v1 endpoints**: `https://your-app-name.onrender.com/api/v1/`
    - Your custom endpoints
 
-## 🔧 Local Testing (Optional)
+## 🔧 Advanced Configuration
 
-Before deploying, test locally:
+### Health Check Path
+- Set to `/health` for automatic monitoring
+- Render pings this endpoint to ensure your service is healthy
+- Returns `{"status": "healthy", "message": "API is running successfully"}`
 
-```bash
-# Activate virtual environment
-source .venv/bin/activate
+### Auto-Deploy Settings
+- Set to "On Commit" for automatic deployments
+- Every push to main branch triggers a new deployment
+- No manual intervention needed
 
-# Run the application
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-# Test endpoints
-curl http://localhost:8000/health
-curl http://localhost:8000/
-curl http://localhost:8000/docs  # Open in browser
-```
+### Environment Variables
+- Set in Render dashboard or `render.yaml`
+- Secure way to manage API keys and secrets
+- Production environment automatically set
 
 ## ⚠️ Important Notes
 
@@ -110,6 +111,7 @@ curl http://localhost:8000/docs  # Open in browser
 ### Common Issues
 
 1. **Build Failures**
+   - Make sure to use `pip` (not `uv`) in the build command
    - Check that `requirements.txt` is up to date
    - Verify Python version compatibility
    - Check build logs in Render dashboard
@@ -127,7 +129,7 @@ curl http://localhost:8000/docs  # Open in browser
 ### Debug Commands
 ```bash
 # Check if dependencies install correctly
-uv pip install -r requirements.txt
+pip install -r requirements.txt
 
 # Test the exact start command Render uses
 PORT=8000 uvicorn app.main:app --host 0.0.0.0 --port $PORT
