@@ -95,9 +95,45 @@ The application will typically be available at `http://127.0.0.1:8000`.
 
 This project uses Pytest for testing and Allure for reporting.
 
-1.  **Run Pytest tests and generate Allure results:**
+You can run tests directly with pytest, or use the provided shell scripts for more control over test execution and environment selection.
+
+### Using Test Runner Scripts
+
+Shell scripts are available in `tests/utils/test_runners/` to help you:
+- Run all tests
+- Run tests by group/feature
+- Run tests by file
+- Specify the environment to test against (dev, uat, prod)
+
+**Examples:**
+
+Run all tests in the default (dev) environment:
+```bash
+./tests/utils/test_runners/run_all_tests.sh
+```
+
+Run all tests in a specific environment:
+```bash
+./tests/utils/test_runners/run_all_tests.sh -e dev
+```
+
+Run tests by group:
+```bash
+./tests/utils/test_runners/run_by_group.sh -g "API Tests"
+```
+
+Run a specific test file:
+```bash
+./tests/utils/test_runners/run_by_file.sh -f tests/api/v1/test_hello.py
+```
+
+You can also pass additional pytest options to these scripts as needed.
+
+For more details on test organization, environment configuration, and advanced usage, see [`tests/README.md`](tests/README.md).
+
+1.  **Run Pytest tests and generate Allure results (direct):**
     ```bash
-    pytest --alluredir=allure-results
+    pytest --alluredir=allure-results -v -s
     ```
 
 2.  **Serve the Allure report:**
