@@ -23,7 +23,7 @@ echo "3. Click 'New' > 'Web Service'"
 echo "4. Connect your GitHub repository"
 echo "5. Use these settings:"
 echo "   - Language: Python 3"
-echo "   - Build Command: uv pip install -r requirements.txt"
+echo "   - Build Command: pip install -r requirements.txt"
 echo "   - Start Command: uvicorn app.main:app --host 0.0.0.0 --port \$PORT"
 echo "   - Plan: Free (for testing)"
 
