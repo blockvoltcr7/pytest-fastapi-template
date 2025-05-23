@@ -1,6 +1,6 @@
-# Docker Configuration Guide for Baby Podcast GenAI Project
+# Docker Configuration Guide for GenAI Project
 
-This document outlines the steps to configure your Baby Podcast GenAI project with Docker.
+This document outlines the steps to configure your GenAI project with Docker.
 
 ## Initial Setup
 
@@ -94,8 +94,8 @@ For handling secrets and credentials:
    echo -n "your-api-key" | gcloud secrets create api-key --data-file=-
    
    # Reference in Cloud Run
-   gcloud run deploy baby-podcast-genai \
-     --image=gcr.io/PROJECT_ID/baby-podcast-genai \
+   gcloud run deploy pytest-fast-api-template \
+     --image=gcr.io/PROJECT_ID/pytest-fast-api-template \
      --update-secrets=API_KEY=api-key:latest
    ```
 
@@ -143,7 +143,7 @@ If your project requires system packages (e.g., ffmpeg):
 
 1. **Configure your service**:
    ```bash
-   gcloud run services update baby-podcast-genai \
+   gcloud run services update pytest-fast-api-template \
      --memory=512Mi \
      --cpu=1 \
      --timeout=300 \
@@ -153,7 +153,7 @@ If your project requires system packages (e.g., ffmpeg):
 2. **Set up a custom domain** (optional):
    ```bash
    gcloud beta run domain-mappings create \
-     --service=baby-podcast-genai \
+     --service=pytest-fast-api-template \
      --domain=api.example.com
    ```
 
@@ -163,12 +163,12 @@ To optimize costs when running on Google Cloud:
 
 1. **Use CPU always allocated** only if necessary:
    ```bash
-   gcloud run services update baby-podcast-genai --no-cpu-always-allocated
+   gcloud run services update pytest-fast-api-template --no-cpu-always-allocated
    ```
 
 2. **Set minimum instances to 0** for serverless scaling:
    ```bash
-   gcloud run services update baby-podcast-genai --min-instances=0
+   gcloud run services update pytest-fast-api-template --min-instances=0
    ```
 
 ## Verification and Validation

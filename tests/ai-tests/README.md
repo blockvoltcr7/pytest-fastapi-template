@@ -1,6 +1,6 @@
 # AI Integration Tests
 
-This folder contains tests for AI-related functionality in the Baby Podcast GenAI application.
+This folder contains tests for AI-related functionality in the GenAI application.
 
 ## Contents
 
@@ -22,7 +22,8 @@ pytest tests/ai-tests/test_openai_integration.py --alluredir=allure-results
 
 These tests require:
 1. An OpenAI API key set as environment variable `OPENAI_API_KEY`
-2. The virtual environment activated and all dependencies installed
+2. An ElevenLabs API key set as environment variable `ELEVENLABS_API_KEY`
+3. The virtual environment activated and all dependencies installed
 
 ## Test Details
 

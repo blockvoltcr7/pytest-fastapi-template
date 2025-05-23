@@ -18,5 +18,8 @@ COPY . .
 # Create directory for allure results
 RUN mkdir -p allure-results
 
-# Command to run tests
-CMD ["pytest", "--alluredir=allure-results"] 
+# Expose port
+EXPOSE 8000
+
+# Command to run the FastAPI application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"] 

@@ -1,1 +1,1 @@
-# This file makes 'schemas' a Python package 
+# This file makes 'schemas' a Python package

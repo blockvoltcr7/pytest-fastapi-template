@@ -1,7 +1,8 @@
-# This file makes 'v1' a Python package 
 from fastapi import APIRouter
-from app.api.v1.endpoints import items, campaigns
+from app.api.v1.endpoints import hello_world_v1
 
+# Create the main v1 router
 api_router = APIRouter()
-api_router.include_router(items.router, prefix="/items", tags=["items"])
-api_router.include_router(campaigns.router, prefix="/campaigns", tags=["campaigns"]) 
+
+# Include routes from endpoints
+api_router.include_router(hello_world_v1.router, tags=["hello"]) 

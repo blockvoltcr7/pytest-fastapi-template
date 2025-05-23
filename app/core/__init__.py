@@ -1,1 +1,1 @@
-# This file makes 'core' a Python package 
+# This file makes 'core' a Python package

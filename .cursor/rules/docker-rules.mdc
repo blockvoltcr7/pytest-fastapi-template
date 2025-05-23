@@ -4,7 +4,7 @@ globs:
 alwaysApply: false
 ---
 
-# Docker Rules for Baby Podcast GenAI Project
+# Docker Rules for GenAI Project
 
 ## Core Principles
 - Always use the existing Docker setup files (Dockerfile, docker-compose.yml) as foundation

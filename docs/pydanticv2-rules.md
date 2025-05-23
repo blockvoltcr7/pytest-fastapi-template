@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # Pydantic V2 Rules and Best Practices
 
 This project uses Pydantic V2 for data validation and settings management.

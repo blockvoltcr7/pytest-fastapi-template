@@ -10,9 +10,10 @@ httpx
 idna
 jiter
 openai
+pillow
 pydantic
 pydantic-core
-pydantic-settings
+pydantic-settings==2.1.0
 python-dotenv
 pytest-asyncio
 requests

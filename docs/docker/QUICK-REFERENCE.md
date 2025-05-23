@@ -1,4 +1,4 @@
-# Docker Quick Reference for Baby Podcast GenAI
+# Docker Quick Reference for GenAI
 
 ## Common Docker Commands
 
@@ -70,11 +70,11 @@ docker volume ls
 
 ```bash
 # Build and push to Google Container Registry
-gcloud builds submit --tag gcr.io/PROJECT_ID/baby-podcast-genai
+gcloud builds submit --tag gcr.io/PROJECT_ID/pytest-fast-api-template
 
 # Deploy to Cloud Run
-gcloud run deploy baby-podcast-genai \
-  --image gcr.io/PROJECT_ID/baby-podcast-genai \
+gcloud run deploy pytest-fast-api-template \
+  --image gcr.io/PROJECT_ID/pytest-fast-api-template \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated
@@ -92,7 +92,7 @@ Common environment variables used in the project:
 
 ## Container Specs
 
-The Baby Podcast GenAI project uses two main containers:
+The GenAI project uses two main containers:
 
 1. **app** - Python application container  
    Base: python:3.11-slim  

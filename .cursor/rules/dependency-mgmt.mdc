@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Dependency Management Rules for Baby Podcast GenAI Project
+# Dependency Management Rules Project
 
 This document outlines requirements for managing Python dependencies in this project using the uv package manager.
 

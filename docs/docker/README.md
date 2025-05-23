@@ -1,6 +1,6 @@
-# Docker Guide for Baby Podcast GenAI Project
+# Docker Guide for GenAI Project
 
-This guide provides comprehensive instructions for containerizing and deploying the Baby Podcast GenAI project using Docker and Google Cloud.
+This guide provides comprehensive instructions for containerizing and deploying the GenAI project using Docker and Google Cloud.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -12,7 +12,7 @@ This guide provides comprehensive instructions for containerizing and deploying 
 
 ## Project Overview
 
-The Baby Podcast GenAI project is a Python-based application focused on testing APIs using pytest and Allure reporting. 
+The GenAI project is a Python-based application focused on testing APIs using pytest and Allure reporting. 
 
 ## Docker Configuration
 
@@ -42,8 +42,8 @@ The project has been containerized using the following Docker files:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd baby-podcast-genai
+   git clone https://github.com/your-username/pytest-fast-api-template.git
+   cd pytest-fast-api-template
    ```
 
 2. Build and run the containers:
@@ -89,8 +89,8 @@ pytest tests/test_api_example.py --alluredir=allure-results
 
 1. **Set up Google Cloud project**:
    ```bash
-   gcloud projects create baby-podcast-genai --name="Baby Podcast GenAI"
-   gcloud config set project baby-podcast-genai
+   gcloud projects create pytest-fast-api-template --name="pytest-fast-api-template"
+   gcloud config set project pytest-fast-api-template
    ```
 
 2. **Enable required APIs**:
@@ -108,7 +108,7 @@ pytest tests/test_api_example.py --alluredir=allure-results
 4. **Access your deployed application**:
    The deployment URL will be displayed in the Cloud Build logs, or you can find it with:
    ```bash
-   gcloud run services describe baby-podcast-genai --region=us-central1 --format='value(status.url)'
+   gcloud run services describe pytest-fast-api-template --region=us-central1 --format='value(status.url)'
    ```
 
 ### CI/CD Integration
@@ -118,7 +118,7 @@ For continuous integration:
 1. Connect your GitHub repository to Cloud Build:
    ```bash
    gcloud builds triggers create github \
-     --repo-name=baby-podcast-genai \
+     --repo-name=pytest-fast-api-template \
      --repo-owner=YOUR_GITHUB_USERNAME \
      --branch-pattern=main \
      --build-config=cloudbuild.yaml
