@@ -1,1 +1,1 @@
-# This file makes 'db' a Python package 
+# This file makes 'db' a Python package

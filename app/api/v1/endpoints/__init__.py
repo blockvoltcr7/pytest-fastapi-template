@@ -1,1 +1,1 @@
-# This file makes 'endpoints' a Python package 
+# This file makes 'endpoints' a Python package

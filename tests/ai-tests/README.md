@@ -1,6 +1,6 @@
 # AI Integration Tests
 
-This folder contains tests for AI-related functionality in the Baby Podcast GenAI application.
+This folder contains tests for AI-related functionality in the GenAI application.
 
 ## Contents
 

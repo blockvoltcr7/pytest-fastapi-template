@@ -28,7 +28,7 @@ from datetime import datetime
 def pytest_configure(config):
     """
     Set up the Allure environment information.
-    
+
     This hook runs before any tests and creates an environment.properties file
     in the Allure results directory containing system and package information.
     This information is displayed in the Allure report.
@@ -37,7 +37,7 @@ def pytest_configure(config):
     if allure_dir:
         if not os.path.exists(allure_dir):
             os.makedirs(allure_dir)
-        
+
         env_file = os.path.join(allure_dir, 'environment.properties')
         with open(env_file, 'w') as f:
             f.write(f'Python.Version={pytest.__version__}\n')
@@ -57,7 +57,7 @@ def pytest_configure(config):
 def pytest_exception_interact(node, call, report):
     """
     Capture exceptions for Allure reporting.
-    
+
     This hook runs when a test fails and attaches the exception details
     to the Allure report for better debugging and visibility.
     """
@@ -74,10 +74,10 @@ def pytest_exception_interact(node, call, report):
 def session():
     """
     Create a requests session for API testing.
-    
+
     This fixture provides a pre-configured requests.Session object with common headers
     for all API tests. The session is automatically closed after each test.
-    
+
     Returns:
         requests.Session: A configured session object for making HTTP requests
     """
@@ -88,24 +88,10 @@ def session():
             "Accept": "application/json"
         })
         yield session
-        
+
     # Cleanup step
     with allure.step("Close requests session"):
         session.close()
-
-# API base URL fixture
-@pytest.fixture
-def api_base_url():
-    """
-    Return the base URL for API tests.
-    
-    This fixture provides the base URL for all API tests. Currently configured
-    to use httpbin.org for example API testing.
-    
-    Returns:
-        str: The base URL for API endpoints
-    """
-    return "https://httpbin.org"
 
 # Helper function to check if a port is available
 def is_port_available(port):
@@ -118,16 +104,16 @@ def is_port_available(port):
 def fastapi_server():
     """
     Start a FastAPI server for testing and clean it up after tests.
-    
+
     This fixture starts the FastAPI server on port 8080 before running tests,
     and ensures it's properly shut down after tests complete.
     """
     port = 8080
-    
+
     # Check if the port is already in use
     if not is_port_available(port):
         pytest.skip(f"Port {port} is already in use, skipping FastAPI tests")
-    
+
     with allure.step("Start FastAPI server for testing"):
         process = subprocess.Popen(
             ["uvicorn", "app.main:app", "--port", str(port)],
@@ -135,10 +121,10 @@ def fastapi_server():
             stderr=subprocess.PIPE,
             preexec_fn=os.setsid  # Use process group for proper cleanup
         )
-        
+
         # Give the server time to start
         time.sleep(2)
-        
+
         # Check if the server started successfully
         if process.poll() is not None:
             # Server failed to start
@@ -154,9 +140,9 @@ def fastapi_server():
                 attachment_type=allure.attachment_type.TEXT
             )
             pytest.fail("FastAPI server failed to start")
-            
+
         yield process
-        
+
     with allure.step("Stop FastAPI server"):
         # Kill the server and its process group
         try:

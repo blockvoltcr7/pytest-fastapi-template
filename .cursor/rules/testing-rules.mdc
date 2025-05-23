@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Testing Rules for Baby Podcast GenAI Project
+# Testing Rules for GenAI Project
 
 This document outlines testing requirements for new feature implementations.
 
