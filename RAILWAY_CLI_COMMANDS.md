@@ -6,17 +6,27 @@ A comprehensive guide to Railway CLI commands for managing your deployments.
 
 ### Install Railway CLI
 ```bash
-# Using npm
-npm install -g @railway/cli
-
-# Using yarn
-yarn global add @railway/cli
-
 # Using Homebrew (macOS)
 brew install railway
 
-# Using curl (Linux/macOS)
-curl -fsSL https://railway.app/install.sh | sh
+# Using npm (macOS, Linux, Windows) - Requires Node.js >=16
+npm i -g @railway/cli
+
+# Using Shell Script (macOS, Linux, Windows via WSL)
+bash <(curl -fsSL cli.new)
+
+# Using Scoop (Windows)
+# Ensure Scoop is installed (https://scoop.sh/)
+scoop install railway
+
+# Using Yarn (Alternative to npm)
+yarn global add @railway/cli
+
+# Pre-built Binaries
+# Download directly from GitHub: https://github.com/railwayapp/cli/releases
+
+# From Source
+# Clone the repo and build: https://github.com/railwayapp/cli
 ```
 
 ### Verify Installation
@@ -28,15 +38,32 @@ railway --version
 
 ### Login to Railway
 ```bash
-# Login via browser
+# Login via browser (opens railway.com authentication page)
 railway login
 
-# Login with token
-railway login --token <your-token>
+# Manual login for environments without a browser (e.g., SSH)
+railway login --browserless
 
 # Check login status
 railway whoami
 ```
+
+### Token-based Authentication (for CI/CD or non-interactive environments)
+
+Railway CLI can be authenticated using tokens by setting environment variables:
+
+- **`RAILWAY_TOKEN` (Project Token):**
+  - Scoped to a specific project and environment.
+  - Allows project-level actions like `railway up`, `railway redeploy`, `railway logs`.
+  - Cannot perform actions like `railway init`, `railway whoami`, `railway link`.
+  - Example: `RAILWAY_TOKEN=your_project_token railway up`
+
+- **`RAILWAY_API_TOKEN` (Account or Team Token):**
+  - **Personal Account Token:** Allows all CLI actions across all workspaces.
+  - **Team Token:** Allows actions on projects within the scoped workspace (cannot run `railway whoami` or `railway link` to other workspaces).
+  - Example: `RAILWAY_API_TOKEN=your_api_token railway init`
+
+*Note: `RAILWAY_TOKEN` takes precedence if both are set.* 
 
 ### Logout
 ```bash
@@ -45,94 +72,204 @@ railway logout
 
 ## Project Management
 
-### List Projects
-```bash
-railway projects
-```
-
 ### Create New Project
 ```bash
+# Interactively prompts for project name and team
 railway init
+
+# Specify project name (team selection will be prompted if not clear)
+railway init --name <your-project-name>
 ```
 
 ### Link to Existing Project
 ```bash
-# Interactive selection
+# Interactive selection of team, project, and environment
 railway link
 
-# Link to specific project
-railway link <project-id>
+# Link to specific project ID and optionally environment
+railway link --project <project-id>
+railway link --project <project-id> --environment <environment-name>
+
+# Link to a specific team, project, and environment
+railway link --team <team-id-or-personal> --project <project-id> --environment <environment-name>
 ```
 
-### Project Information
+### List Projects
 ```bash
-# Show current project status
-railway status
+railway list
+```
 
-# Show project details
-railway project
+### Unlink Project
+```bash
+# Disconnects the current directory from the linked Railway project
+railway unlink
+```
+
+### Project Status and Information
+```bash
+# Show current linked project, environment, service, and user status
+railway status
+```
+
+## Environment Management
+
+Projects can have multiple environments (e.g., production, staging). By default, CLI commands target the linked environment.
+
+### Link/Switch Environment
+```bash
+# Interactively select an environment to link for the current project
+railway environment
+
+# Link to a specific environment by name
+railway environment <environment-name>
+```
+
+### Create New Environment
+```bash
+# Interactively create a new environment
+railway environment new
+
+# Create a new environment with a specific name
+railway environment new <new-environment-name>
+
+# Duplicate an existing environment to a new one
+railway environment new <new-environment-name> --duplicate <source-environment-name>
+# Optionally override service variables when duplicating
+railway environment new <new-env> --duplicate <source-env> --service-variable "<service-name-or-id>=MY_VAR=new_value"
+```
+
+### Delete Environment
+```bash
+# Interactively delete an environment
+railway environment delete
+
+# Delete a specific environment by name
+railway environment delete <environment-name>
+
+# Skip confirmation dialog
+railway environment delete <environment-name> --yes
 ```
 
 ## Service Management
 
-### List Services
+Services are the individual components of your project, like a backend API, a database, or a frontend application.
+
+### Add Service (Databases, From Repo, From Docker Image)
 ```bash
-railway service list
+# Interactively add a new service (e.g., PostgreSQL, MySQL, Redis, MongoDB) or link to an existing one
+railway add
+
+# Add a specific database service (e.g., postgres, mysql, redis, mongo)
+railway add --database postgres
+
+# Add a service from a Git repository
+railway add --repo https://github.com/user/repo.git
+
+# Add a service from a Docker image
+railway add --image mydockerimage:latest
+
+# Add a service and set initial environment variables
+railway add --database redis --service my-cache --variables "CACHE_PORT=6379" "MAX_MEMORY=256mb"
+# For service specific variables when adding a template based service (e.g. from `railway deploy -t <template>`)
+# railway deploy -t postgres -v "Backend.POSTGRES_USER=admin"
 ```
 
 ### Select/Link Service
 ```bash
-# Interactive service selection
+# Interactively select a service within the current project and environment to link to the current directory
 railway service
 
-# Link to specific service
-railway service <service-name>
+# Link to a specific service by name or ID
+railway service <service-name-or-id>
 ```
 
-### Create New Service
+### Unlink Service
 ```bash
-railway service create
+# Unlinks a service from the current directory context (project link remains)
+railway unlink --service
 ```
 
-### Delete Service
+### Service Information
 ```bash
-railway service delete
+# View the currently linked service via `railway status`
+railway status
 ```
 
 ## Deployment Commands
 
-### Deploy Current Directory
+### Deploy Project/Service (from local directory)
 ```bash
-# Deploy using detected buildpack
+# Deploy the linked project/service from the current or specified directory
+# Streams build and deployment logs by default.
 railway up
 
-# Deploy with specific dockerfile
-railway up --dockerfile Dockerfile
+# Deploy from a specific path (project root is still deployed if in subdirectory)
+railway up ./my-app-subdirectory
 
-# Deploy from specific directory
-railway up --path ./my-app
-
-# Deploy with detach (don't stream logs)
+# Detach from logs after starting the deployment
 railway up --detach
+
+# CI mode: Only stream build logs and exit after completion
+railway up --ci
+
+# Deploy to a specific service (if multiple services and not linked)
+railway up --service <service-name-or-id>
+
+# Deploy to a specific environment
+railway up --environment <environment-name>
+
+# Do not ignore paths from .gitignore
+railway up --no-gitignore
+
+# Enable verbose output for debugging
+railway up --verbose
+```
+
+### Deploy Template
+```bash
+# Provision a template (e.g., a predefined stack or service) into your project
+railway deploy --template <template-code>
+
+# Deploy a template and set template-specific variables
+# To specify a variable for a single service within the template, prefix with "{service}."
+railway deploy --template <template-code> --variable "MY_VAR=value" --variable "MyServiceInTemplate.PORT=8080"
 ```
 
 ### Check Deployment Status
 ```bash
-# Show deployment status
+# Show overall project and deployment status
 railway status
 
-# Show recent deployments
-railway deployments
+# Show recent deployments for the linked project/environment
+# (The old `railway deployments` command functionality is covered by status and logs)
+# For specific deployment history, refer to the Railway dashboard.
 ```
 
-### Rollback Deployment
+### Redeploy Last Successful Deployment
 ```bash
-# List deployments to find ID
-railway deployments
+# Redeploy the currently deployed version of a service
+railway redeploy
 
-# Rollback to specific deployment
-railway rollback <deployment-id>
+# Redeploy a specific service
+railway redeploy --service <service-name-or-id>
+
+# Skip confirmation
+railway redeploy --yes
 ```
+
+### Remove Last Deployment (Rollback alternative)
+```bash
+# Remove the most recent deployment for the linked service
+# This can act as a form of rollback if the previous deployment becomes active.
+railway down
+
+# Skip confirmation
+railway down --yes
+```
+
+### Rollback Deployment (Legacy - use `railway down` or `redeploy`)
+*The `railway rollback <deployment-id>` command is not prominent in recent CLI versions. 
+Prefer using `railway down` to remove a bad deployment or `railway redeploy` to re-trigger a known good one. Check the Railway dashboard for specific deployment history and rollback options.*
 
 ## Domain Management
 
