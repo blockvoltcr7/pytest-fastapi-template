@@ -2,9 +2,11 @@ import allure
 import pytest
 import requests
 
-@allure.epic("FastAPI Application")
-@allure.feature("API Endpoints")
+@allure.epic("Core API")
+@allure.feature("API Tests")
+@allure.suite("smoke_tests")
 @pytest.mark.api
+@pytest.mark.smoke
 class TestFastAPIEndpoints:
 
     @allure.story("Root Endpoint")

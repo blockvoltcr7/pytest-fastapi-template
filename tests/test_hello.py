@@ -3,8 +3,12 @@ import pytest
 
 
 # @pytest.mark.skip(reason="Test disabled")
-@allure.feature("Hello World")
+@allure.epic("Core API")
+@allure.feature("API Tests")
+@allure.suite("smoke_tests")
 @allure.story("Basic Testing")
+@pytest.mark.api
+@pytest.mark.smoke
 def test_hello_world():
     with allure.step("Create hello world message"):
         message = "Hello, world!"

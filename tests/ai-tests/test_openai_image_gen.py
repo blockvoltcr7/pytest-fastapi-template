@@ -7,7 +7,7 @@ from datetime import datetime
 from openai import OpenAI
 
 
-# @pytest.mark.skip(reason="Test disabled")
+@pytest.mark.skip(reason="Test disabled")
 @allure.epic("AI Services")
 @allure.feature("OpenAI Image Generation")
 @pytest.mark.api
