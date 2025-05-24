@@ -7,14 +7,9 @@ import requests
 @pytest.mark.api
 class TestFastAPIEndpoints:
 
-    @pytest.fixture
-    def api_base_url(self):
-        """Override the base URL to use the local FastAPI server"""
-        return "http://localhost:8080"
-
     @allure.story("Root Endpoint")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_root_endpoint(self, session, api_base_url, fastapi_server):
+    def test_root_endpoint(self, session, api_base_url):
         """Test the root endpoint returns the correct welcome message"""
 
         with allure.step(f"Send GET request to root endpoint {api_base_url}/"):
@@ -43,7 +38,7 @@ class TestFastAPIEndpoints:
 
     @allure.story("Hello World Endpoint")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_hello_endpoint(self, session, api_base_url, fastapi_server):
+    def test_hello_endpoint(self, session, api_base_url):
         """Test the hello endpoint returns the correct greeting message"""
 
         with allure.step(f"Send GET request to hello endpoint {api_base_url}/api/v1/hello"):

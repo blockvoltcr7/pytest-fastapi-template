@@ -36,6 +36,45 @@ The framework supports three environments:
 
 Environment-specific configurations are stored in `tests/config/environments/`.
 
+## Server Setup and Prerequisites
+
+**Important**: The test framework assumes that the FastAPI server is **already running** on the configured port. Tests do not start their own server instance.
+
+### For Development (dev environment):
+
+1. **Start the FastAPI server** before running tests:
+   ```bash
+   # Ensure virtual environment is activated
+   source .venv/bin/activate
+   
+   # Start the server on port 8000
+   uvicorn app.main:app --reload
+   ```
+
+2. **Verify the server is running**:
+   ```bash
+   curl http://localhost:8000/health
+   # Should return: {"status":"healthy","message":"API is running successfully"}
+   ```
+
+3. **Run tests** (server must be running first):
+   ```bash
+   ./tests/utils/test_runners/run_all_tests.sh
+   ```
+
+### For Other Environments:
+
+- **UAT**: Tests will use the configured UAT server URL
+- **Production**: Tests will use the configured production server URL
+- Server availability is verified by the test framework during execution
+
+### Why This Approach?
+
+- **No conflicts**: Avoids port conflicts and server startup issues
+- **Realistic testing**: Tests run against the actual server as users would interact with it
+- **Faster execution**: No time spent starting/stopping servers for each test run
+- **Flexibility**: Can test against local, remote, or containerized servers
+
 ## Running Tests
 
 ### Using Test Runner Scripts
