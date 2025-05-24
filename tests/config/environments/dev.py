@@ -3,7 +3,7 @@ Development environment configuration.
 """
 
 # API Configuration
-API_BASE_URL = "http://localhost:8080"
+API_BASE_URL = "http://localhost:8000"
 API_HELLO_ENDPOINT = "/api/v1/hello"
 API_HEALTH_ENDPOINT = "/health"
 API_OPENAI_ENDPOINT = "/api/v1/ai/generate"

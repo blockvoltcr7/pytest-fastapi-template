@@ -13,7 +13,7 @@ Runs all tests in the project.
 ./run_all_tests.sh
 
 # Run in specific environment
-./run_all_tests.sh -e uat
+./run_all_tests.sh -e dev
 
 # Options:
 # -e <environment>  : Specify environment (dev/uat/prod)

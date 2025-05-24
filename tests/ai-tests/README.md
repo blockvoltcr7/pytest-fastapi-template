@@ -1,33 +1,60 @@
-# AI Integration Tests
+# AI Tests
 
-This folder contains tests for AI-related functionality in the GenAI application.
+This directory contains tests for AI service integrations including OpenAI and ElevenLabs.
 
-## Contents
+## Setup Requirements
 
-- `test_openai_integration.py`: Tests for OpenAI API integration
+### Environment Variables
 
-## Running Tests
+The AI tests require API keys to be configured. **Important**: These tests load environment variables from a `.env` file in the project root, not from system environment variables.
 
-From the project root directory:
+1. **Create a `.env` file** in the project root:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Add your API keys** to the `.env` file:
+   ```bash
+   # OpenAI Configuration
+   OPENAI_API_KEY=your_actual_openai_api_key_here
+   
+   # ElevenLabs Configuration (if using)
+   ELEVENLABS_API_KEY=your_actual_elevenlabs_api_key_here
+   ```
+
+3. **Verify the setup** by running a simple test:
+   ```bash
+   pytest tests/ai-tests/test_openai_integration.py::TestOpenAIIntegration::test_openai_response -v
+   ```
+
+### Security Notes
+
+- The `.env` file is automatically excluded from Git (listed in `.gitignore`)
+- Never commit actual API keys to version control
+- Use `.env.example` as a template for required environment variables
+
+## Running AI Tests
 
 ```bash
 # Run all AI tests
-pytest tests/ai-tests/ --alluredir=allure-results
+pytest ./tests/ai-tests/ -v
 
-# Run specific test
-pytest tests/ai-tests/test_openai_integration.py --alluredir=allure-results
+# Run specific AI test file
+pytest ./tests/ai-tests/test_openai_integration.py -v
+
+# Run with Allure reporting
+pytest ./tests/ai-tests/ --alluredir=allure-results -v
 ```
 
-## Requirements
+## Test Coverage
 
-These tests require:
-1. An OpenAI API key set as environment variable `OPENAI_API_KEY`
-2. An ElevenLabs API key set as environment variable `ELEVENLABS_API_KEY`
-3. The virtual environment activated and all dependencies installed
+- **OpenAI Integration**: Basic API response testing
+- **OpenAI Image Generation**: Image creation with various parameters
+- **ElevenLabs Integration**: Voice synthesis testing (if configured)
 
-## Test Details
+## Troubleshooting
 
-The OpenAI integration test verifies that the application can:
-1. Initialize an OpenAI client
-2. Send requests to the OpenAI API
-3. Receive and process responses properly 
+**Error: "OPENAI_API_KEY not found in environment variables"**
+- Ensure you have created a `.env` file in the project root
+- Verify your API key is correctly set in the `.env` file
+- Check that the `.env` file is not accidentally committed to Git 

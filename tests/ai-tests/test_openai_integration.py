@@ -7,25 +7,21 @@ from openai import OpenAI
 @allure.feature("OpenAI API")
 class TestOpenAIIntegration:
 
-    @pytest.fixture
-    def openai_client(self):
-        """Create an OpenAI client for testing."""
-        with allure.step("Initialize OpenAI client"):
-            client = OpenAI()
-            return client
-
     @allure.story("Basic API Response")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_openai_response(self, openai_client):
         """Test that OpenAI API returns a valid response."""
 
-        prompt = "hello world"
+        prompt = "Say hello world in exactly 3 words"
 
         with allure.step(f"Send request to OpenAI with prompt: '{prompt}'"):
             try:
-                response = openai_client.responses.create(
-                    model="gpt-4.1",
-                    input=prompt
+                response = openai_client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=50
                 )
 
                 allure.attach(
@@ -41,10 +37,13 @@ class TestOpenAIIntegration:
                 )
                 pytest.fail(f"OpenAI API request failed: {str(e)}")
 
-        with allure.step("Verify response contains output text"):
-            assert hasattr(response, "output_text"), "Response missing output_text attribute"
+        with allure.step("Verify response contains message content"):
+            assert len(response.choices) > 0, "Response missing choices"
+            
+            message = response.choices[0].message
+            assert message.content, "Response message missing content"
 
-            output_text = response.output_text
+            output_text = message.content.strip()
             allure.attach(
                 output_text,
                 name="Response Text",

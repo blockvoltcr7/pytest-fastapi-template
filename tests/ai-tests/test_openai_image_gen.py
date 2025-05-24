@@ -15,15 +15,13 @@ class TestOpenAIImageGeneration:
 
     @allure.story("Pixel Art Generation")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_generate_pixel_art_image(self):
+    def test_generate_pixel_art_image(self, openai_client):
         """Test that OpenAI can generate a pixel art image with transparent background"""
-        with allure.step("Initialize OpenAI client"):
-            client = OpenAI()
 
         with allure.step("Request image generation with specific parameters"):
-            result = client.images.generate(
+            result = openai_client.images.generate(
                 model="gpt-image-1",
-                prompt="a pixel art style of lu kang from mortal kombat in different fight poses",
+                prompt="a pixel art style of Raiden from mortal kombat in different fight poses",
                 size="1024x1024",
                 background="transparent",
                 quality="high",

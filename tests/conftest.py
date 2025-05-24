@@ -16,12 +16,12 @@ import os
 import pytest
 import allure
 import requests
-import time
-import subprocess
-import signal
-import socket
-from contextlib import closing
 from datetime import datetime
+from dotenv import load_dotenv
+from tests.config.config_loader import config
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Environment info for the Allure report
 @pytest.hookimpl(tryfirst=True)
@@ -93,64 +93,56 @@ def session():
     with allure.step("Close requests session"):
         session.close()
 
-# Helper function to check if a port is available
-def is_port_available(port):
-    """Check if a port is available."""
-    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-        return sock.connect_ex(('localhost', port)) != 0
-
-# FastAPI server fixture for testing
+# API Base URL fixture using configuration
 @pytest.fixture(scope="session")
-def fastapi_server():
+@allure.title("API Base URL")
+def api_base_url():
     """
-    Start a FastAPI server for testing and clean it up after tests.
-
-    This fixture starts the FastAPI server on port 8080 before running tests,
-    and ensures it's properly shut down after tests complete.
+    Get the API base URL from the current environment configuration.
+    
+    This fixture assumes the FastAPI server is already running and uses the
+    configured base URL for the current test environment (dev/uat/prod).
+    
+    Returns:
+        str: The base URL for the API server
     """
-    port = 8080
-
-    # Check if the port is already in use
-    if not is_port_available(port):
-        pytest.skip(f"Port {port} is already in use, skipping FastAPI tests")
-
-    with allure.step("Start FastAPI server for testing"):
-        process = subprocess.Popen(
-            ["uvicorn", "app.main:app", "--port", str(port)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            preexec_fn=os.setsid  # Use process group for proper cleanup
+    base_url = getattr(config, 'API_BASE_URL', 'http://localhost:8000')
+    
+    with allure.step(f"Using API base URL: {base_url}"):
+        allure.attach(
+            base_url,
+            name="API Base URL",
+            attachment_type=allure.attachment_type.TEXT
         )
+    
+    return base_url
 
-        # Give the server time to start
-        time.sleep(2)
-
-        # Check if the server started successfully
-        if process.poll() is not None:
-            # Server failed to start
-            stdout, stderr = process.communicate()
-            allure.attach(
-                stdout.decode('utf-8'),
-                name="Server stdout",
-                attachment_type=allure.attachment_type.TEXT
-            )
-            allure.attach(
-                stderr.decode('utf-8'),
-                name="Server stderr",
-                attachment_type=allure.attachment_type.TEXT
-            )
-            pytest.fail("FastAPI server failed to start")
-
-        yield process
-
-    with allure.step("Stop FastAPI server"):
-        # Kill the server and its process group
-        try:
-            os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-            process.wait(timeout=5)
-        except:
-            # If it didn't terminate gracefully, force kill
-            try:
-                os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-            except:
-                pass
+# OpenAI client fixture
+@pytest.fixture(scope="session")
+@allure.title("OpenAI Client")
+def openai_client():
+    """
+    Create an OpenAI client with API key from environment variables.
+    
+    This fixture loads the OPENAI_API_KEY from the .env file and creates
+    a properly configured OpenAI client for testing.
+    
+    Returns:
+        OpenAI: A configured OpenAI client instance
+    """
+    from openai import OpenAI
+    
+    api_key = os.getenv('OPENAI_API_KEY')
+    
+    if not api_key:
+        pytest.skip("OPENAI_API_KEY not found in environment variables. Please set it in .env file.")
+    
+    with allure.step("Initialize OpenAI client with API key from environment"):
+        client = OpenAI(api_key=api_key)
+        allure.attach(
+            "OpenAI client initialized successfully",
+            name="OpenAI Client Status",
+            attachment_type=allure.attachment_type.TEXT
+        )
+    
+    return client
