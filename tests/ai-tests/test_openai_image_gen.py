@@ -7,7 +7,7 @@ from datetime import datetime
 from openai import OpenAI
 
 
-@pytest.mark.skip(reason="Test disabled")
+# @pytest.mark.skip(reason="Test disabled")
 @allure.epic("AI Services")
 @allure.feature("OpenAI Image Generation")
 @pytest.mark.api
@@ -19,9 +19,11 @@ class TestOpenAIImageGeneration:
         """Test that OpenAI can generate a pixel art image with transparent background"""
 
         with allure.step("Request image generation with specific parameters"):
+            # The code snippet you provided is making a request to the OpenAI API to generate a pixel
+            # art image with specific parameters. Here's a breakdown of what each parameter is doing:
             result = openai_client.images.generate(
                 model="gpt-image-1",
-                prompt="a pixel art style of Raiden from mortal kombat in different fight poses",
+                prompt="a pixel art style of smoke from mortal kombat in different fight poses",
                 size="1024x1024",
                 background="transparent",
                 quality="high",
