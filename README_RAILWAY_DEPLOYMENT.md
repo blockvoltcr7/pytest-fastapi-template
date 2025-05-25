@@ -6,85 +6,64 @@ This guide provides the **complete deployment strategy** for your FastAPI applic
 
 ✅ **No Sleep Mode**: Unlike Render's free tier, Railway doesn't force apps to sleep  
 ✅ **Superior UX**: Users consistently report the best deployment experience  
-✅ **Multiple Options**: 4 different deployment methods  
+✅ **Multiple Options**: Different deployment methods with Docker support  
 ✅ **Auto-Detection**: Automatically detects and configures your app  
 ✅ **Built-in Networking**: Easy service-to-service communication  
 ✅ **Better Performance**: Faster deployments and more reliable infrastructure  
 
-## ⚠️ Important: UV Compatibility Note
+## 🚀 Getting Started with Railway
 
-Railway doesn't natively support the `uv` package manager. This guide includes Railway-optimized configurations that use standard `pip` for reliable deployment.
+### 1. Create Railway Account
+1. Visit [Railway.app](https://railway.app)
+2. Click "Login" or "Sign Up"
+3. Authenticate with GitHub (recommended)
+4. Complete any required verification steps
+
+### 2. Create New Project
+1. Click "New Project" in Railway dashboard
+2. Select "Deploy from GitHub repo"
+3. Choose your repository
+4. Railway will automatically detect your configuration
 
 ## 📋 Pre-deployment Checklist
 
 ✅ FastAPI application configured in `app/main.py`  
 ✅ Dependencies listed in `requirements.txt`  
-✅ `railway.json` configuration file created (Railway-compatible)  
+✅ `railway.json` configuration file created  
 ✅ Health check endpoint added (`/health`)  
-✅ Railway-optimized `Dockerfile` ready  
+✅ Railway-optimized `Dockerfile.railway` ready  
 
-## 🚀 Deployment Options (4 Ways)
+## ⚙️ Required Configuration Files
 
-### Option 1: One-Click Template Deploy (Fastest - 30 seconds)
+### 1. railway.json
+```json
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile.railway"
+  },
+  "deploy": {
+    "startCommand": null,
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+```
 
-1. **Use Railway Template**
-   - Go to [Railway FastAPI Template](https://railway.app/template/fastapi)
-   - Click **"Deploy on Railway"**
-   - Connect your GitHub account
-   - Your app is live in 30 seconds!
-
-### Option 2: Deploy from GitHub Repository (Recommended)
-
-1. **Push to GitHub**
-   ```bash
-   git add .
-   git commit -m "Deploy to Railway with pip compatibility"
-   git push origin main
-   ```
-
-2. **Deploy on Railway**
-   - Go to [https://railway.app](https://railway.app)
-   - Click **"New Project"**
-   - Select **"Deploy from GitHub repo"**
-   - Choose your repository
-   - Click **"Deploy Now"**
-
-3. **Configure Public URL**
-   - Navigate to **Settings** → **Networking**
-   - Click **"Generate Domain"**
-   - Your API is live at `https://your-app-name.up.railway.app`
-
-### Option 3: Railway CLI (For Developers)
-
-1. **Install Railway CLI**
-   ```bash
-   npm install -g @railway/cli
-   # or
-   curl -fsSL https://railway.app/install.sh | sh
-   ```
-
-2. **Authenticate and Deploy**
-   ```bash
-   railway login
-   railway init
-   railway up
-   ```
-
-### Option 4: Docker Deployment (Railway-Optimized)
-
-Railway automatically detects the `Dockerfile` and uses it for deployment.
-
-**Our Railway-optimized Dockerfile (uses standard pip):**
-
+### 2. Dockerfile.railway
 ```dockerfile
 FROM python:3.11-slim
 
+# Set working directory
 WORKDIR /app
 
 # Copy requirements file
 COPY requirements.txt ./
 
-# Install dependencies using standard pip (Railway compatible)
+# Install dependencies using standard pip
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 # Copy application code
@@ -93,187 +72,132 @@ COPY . .
 # Create directory for allure results
 RUN mkdir -p allure-results
 
-# Expose port (Railway will set the PORT environment variable)
-EXPOSE $PORT
+# Expose port
+EXPOSE 8000
 
-# Run the FastAPI application
+# Set environment variable with a default value
+ENV PORT=8000
+
+# Run the FastAPI application with proper PORT variable expansion
 CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
-## ⚙️ Railway-Compatible Configuration Files
+## 🔑 Important Configuration Notes
 
-### Railway.json (Dockerfile Strategy)
+### PORT Handling
+- Railway automatically injects a `PORT` environment variable
+- The Dockerfile sets a default `PORT=8000` as fallback
+- Use simple `CMD` format instead of shell form for proper variable expansion
+- Avoid using `${PORT:-8000}` syntax as it can cause issues
 
-```json
-{
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile"
-  },
-  "deploy": {
-    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT",
-    "healthcheckPath": "/health",
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
-  }
-}
+### Health Check
+```python
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "message": "API is running successfully"}
 ```
 
-### Alternative: NIXPACKS Strategy
+## 🚀 Deployment Process
 
-If you prefer NIXPACKS over Docker:
+1. **Prepare Repository**
+   ```bash
+   git add .
+   git commit -m "Configure Railway deployment"
+   git push origin main
+   ```
 
-```json
-{
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "NIXPACKS"
-  },
-  "deploy": {
-    "startCommand": "pip install -r requirements.txt && uvicorn app.main:app --host 0.0.0.0 --port $PORT",
-    "healthcheckPath": "/health",
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
-  }
-}
-```
+2. **Deploy on Railway**
+   - Go to Railway Dashboard
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your repository
+   - Wait for initial deployment (2-3 minutes)
+
+3. **Monitor Deployment**
+   - Watch build logs in Railway dashboard
+   - Check for successful health check responses
+   - Verify PORT environment variable handling
+
+4. **Configure Domain**
+   - Go to Settings → Networking
+   - Click "Generate Domain"
+   - Your API will be available at `https://your-app-name.up.railway.app`
 
 ## 🧪 Testing Your Deployment
 
-Once deployed, test these endpoints:
-
-1. **Root endpoint**: `https://your-app-name.up.railway.app/`
-   - Expected: `{"message": "GenAI API"}`
-
-2. **Health check**: `https://your-app-name.up.railway.app/health`
-   - Expected: `{"status": "healthy", "message": "API is running successfully"}`
-
-3. **API Documentation**: `https://your-app-name.up.railway.app/docs`
-   - Interactive Swagger UI
-
-4. **API v1 endpoints**: `https://your-app-name.up.railway.app/api/v1/`
-   - Your custom endpoints
-
-## 🔧 Advanced Features
-
-### Environment Variables
-- Set in Railway dashboard under **Variables** tab
-- Supports `.env` file upload
-- Automatic secret management
-
-### Custom Domains
-- Add your own domain in **Settings** → **Networking**
-- Automatic SSL certificate provisioning
-- No additional configuration needed
-
-### Database Integration
-- One-click PostgreSQL, MySQL, MongoDB, Redis
-- Automatic connection string injection
-- Built-in backup and scaling
-
-### Monitoring & Logs
-- Real-time logs in Railway dashboard
-- Built-in metrics and monitoring
-- Error tracking and alerts
-
-## 🚨 Troubleshooting
-
-### UV/UVicorn Issues
-
-1. **UV Not Supported**
-   - Railway doesn't natively support `uv` package manager
-   - Use our Railway-optimized `Dockerfile` with standard `pip`
-   - Remove any `uv` commands from build process
-
-2. **Build Failures with UV**
+1. **Health Check**
    ```bash
-   # ❌ Don't use in Railway
-   RUN uv pip install -r requirements.txt
-   
-   # ✅ Use instead
-   RUN pip install --no-cache-dir --upgrade -r requirements.txt
+   curl https://your-app-name.up.railway.app/health
+   # Expected: {"status": "healthy", "message": "API is running successfully"}
    ```
 
-### Common Issues
+2. **API Documentation**
+   - Visit `https://your-app-name.up.railway.app/docs`
+   - Test endpoints through Swagger UI
 
-1. **Port Configuration**
-   - Railway automatically sets `$PORT` environment variable
-   - Always use `--port $PORT` in your start command
-   - Default port is dynamically assigned
+## 🚨 Troubleshooting Common Issues
 
-2. **Build Failures**
-   - Ensure `requirements.txt` is in repository root
-   - Use standard `pip` instead of `uv`
-   - Verify Python version compatibility
-   - Review build logs in Railway dashboard
+### 1. PORT Configuration Issues
+If you see errors like `Invalid value for '--port': '$PORT' is not a valid integer`:
+- Verify `Dockerfile.railway` uses the correct CMD format
+- Ensure PORT environment variable is properly set
+- Check Railway dashboard for environment variables
 
-3. **App Won't Start**
-   - Verify start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-   - Check that `app.main:app` matches your file structure
-   - Review deployment logs
+### 2. Health Check Failures
+- Verify `/health` endpoint exists and returns correct response
+- Check health check timeout in `railway.json`
+- Review application logs for startup errors
 
-### Debug Commands
-```bash
-# Local testing with Railway environment
-railway run python -m uvicorn app.main:app --reload
+### 3. Build Failures
+- Ensure all dependencies are in `requirements.txt`
+- Use standard `pip` instead of `uv`
+- Check build logs for specific error messages
 
-# Check Railway status
-railway status
+## 📊 Monitoring and Logs
 
-# View logs
-railway logs
+1. **View Logs**
+   - Railway Dashboard → Your Project → Logs
+   - Filter by service or deployment
+   - Search for specific error messages
 
-# Test with standard pip locally
-pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
+2. **Monitor Health**
+   - Check deployment status
+   - Review health check responses
+   - Monitor resource usage
 
-## 🎯 Migration from Render
+## 🔧 Advanced Configuration
 
-If you're migrating from Render to Railway:
+### Environment Variables
+- Set in Railway dashboard under Variables tab
+- Supports `.env` file upload
+- Automatically injected into containers
 
-1. **Export Environment Variables** from Render dashboard
-2. **Import Variables** to Railway dashboard
-3. **Switch from UV to PIP** in build configurations
-4. **Update Domain** in your frontend/client applications
-5. **Test Thoroughly** before switching DNS
+### Custom Domains
+- Add domains in Settings → Networking
+- Automatic SSL certificate provisioning
+- Update DNS records as instructed
 
-## 📈 Scaling and Production
+### Scaling
+- Configure resources in project settings
+- Set auto-scaling rules
+- Monitor performance metrics
 
-### Performance Optimization
-- **Auto-scaling**: Railway automatically scales based on demand
-- **Resource Allocation**: Configure CPU and memory limits
-- **Geographic Regions**: Deploy close to your users
+## 📚 Additional Resources
 
-### Production Best Practices
-- Use **environment variables** for all secrets
-- Enable **health checks** for reliability
-- Use **standard pip** for dependency management
-- Set up **monitoring** and **alerts**
-- Configure **custom domains** with SSL
+- [Railway Documentation](https://docs.railway.app/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [Docker Best Practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
-## 📚 Resources
+## 🆘 Getting Help
 
-- [Railway FastAPI Documentation](https://docs.railway.com/guides/fastapi)
-- [Railway Templates](https://railway.app/templates)
-- [Railway CLI Documentation](https://docs.railway.com/develop/cli)
-- [Migration Guides](https://docs.railway.com/guides/migrate-from-render)
-
-## 🚄 Next Steps
-
-After successful deployment:
-
-1. **Custom Domain**: Add your professional domain
-2. **Database**: Add PostgreSQL or MongoDB with one click
-3. **CI/CD**: Set up automatic deployments
-4. **Monitoring**: Enable health checks and alerts
-5. **Team**: Invite team members for collaboration
+- Join [Railway Discord](https://discord.gg/railway)
+- Check [Railway Status Page](https://status.railway.app/)
+- Review [Common Issues](https://docs.railway.app/troubleshoot)
 
 ---
 
-**Deployment Status**: ✅ Railway-Ready (pip-compatible)  
-**Estimated Deploy Time**: 30 seconds - 2 minutes  
-**Expected URL**: `https://your-app-name.up.railway.app`  
+**Deployment Status**: ✅ Railway-Ready  
+**Estimated Deploy Time**: 2-3 minutes  
+**Support**: [Railway Support](https://railway.app/support)
 
 **All aboard the Railway! 🚄✨** 
