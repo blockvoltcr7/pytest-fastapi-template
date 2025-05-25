@@ -15,6 +15,7 @@ This guide provides the **easiest and fastest way** to deploy your FastAPI appli
 ### Option 1: Quick Deploy (Recommended for beginners)
 
 1. **Push to GitHub**
+If you have made changes to your code base
    ```bash
    git add .
    git commit -m "Prepare for Render deployment"
