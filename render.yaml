@@ -1,9 +1,22 @@
+# -------------------------------------------------------------------
+# render.yaml
+# 
+# This file defines the infrastructure and deployment settings for
+# deploying your FastAPI application to Render.com.
+#
+# - Render automatically detects this file and provisions resources
+#   as specified below.
+# - You can version control this file with your codebase for
+#   reproducible, automated deployments.
+# - Adjust the settings as needed for your application's requirements.
+# -------------------------------------------------------------------
+
 services:
-  - type: web
-    name: genai-fastapi
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  - type: web  # This service will be exposed to the web (HTTP)
+    name: genai-fastapi  # Name of your web service on Render
+    runtime: python  # Use the Python runtime environment
+    buildCommand: pip install -r requirements.txt  # Install dependencies before starting
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT  # Start FastAPI with Uvicorn
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

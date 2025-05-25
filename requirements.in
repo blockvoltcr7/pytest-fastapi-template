@@ -23,7 +23,7 @@ typing-extensions
 typing-inspection
 urllib3
 websockets
-allure-pytest
+allure-pytest==2.14.2
 
 # FastAPI
 fastapi

@@ -10,11 +10,27 @@ This guide provides the **easiest and fastest way** to deploy your FastAPI appli
 ✅ Health check endpoint added (`/health`)  
 ✅ All tests passing with pytest  
 
+## 📝 Prerequisite: Create a Render.com Account
+
+Before you can deploy your FastAPI application, you need to have a [Render.com](https://render.com/) account.
+
+1. **Sign Up or Log In**
+   - Go to [https://render.com](https://render.com)
+   - Click **"Sign Up"** (or **"Log In"** if you already have an account)
+   - You can sign up using your email or with your GitHub account for easier integration
+
+2. **Verify Your Email**
+   - If you signed up with email, check your inbox for a verification email from Render and follow the instructions
+
+Once your account is set up, you can proceed with the deployment steps below.
+
+
 ## 🌟 Deployment Options
 
 ### Option 1: Quick Deploy (Recommended for beginners)
 
 1. **Push to GitHub**
+If you have made changes to your code base
    ```bash
    git add .
    git commit -m "Prepare for Render deployment"
@@ -64,16 +80,16 @@ Simply connect your repo and Render will use this configuration automatically.
 
 Once deployed, test these endpoints:
 
-1. **Root endpoint**: `https://your-app-name.onrender.com/`
+1. **Root endpoint**: `https://pytest-fastapi-template.onrender.com/`
    - Expected: `{"message": "GenAI API"}`
 
-2. **Health check**: `https://your-app-name.onrender.com/health`
+2. **Health check**: `https://pytest-fastapi-template.onrender.com/health`
    - Expected: `{"status": "healthy", "message": "API is running successfully"}`
 
-3. **API Documentation**: `https://your-app-name.onrender.com/docs`
+3. **API Documentation**: `https://pytest-fastapi-template.onrender.com/docs`
    - Interactive Swagger UI
 
-4. **API v1 endpoints**: `https://your-app-name.onrender.com/api/v1/`
+4. **API v1 endpoints**: `https://pytest-fastapi-template.onrender.com/api/v1/hello`
    - Your custom endpoints
 
 ## 🔧 Advanced Configuration
