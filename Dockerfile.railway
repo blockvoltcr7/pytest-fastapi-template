@@ -15,5 +15,11 @@ COPY . .
 # Create directory for allure results
 RUN mkdir -p allure-results
 
+# Expose port
+EXPOSE 8000
+
+# Set environment variable with a default value
+ENV PORT=8000
+
 # Run the FastAPI application with proper PORT variable expansion
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"] 
+CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT 
