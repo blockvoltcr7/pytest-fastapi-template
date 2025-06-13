@@ -19,7 +19,7 @@ To run this application:
 """
 
 from fastapi import FastAPI
-from app.api.v1 import api_router
+from app.api.v1.api import api_router
 import uvicorn
 
 app = FastAPI(
