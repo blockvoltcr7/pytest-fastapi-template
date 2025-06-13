@@ -9,15 +9,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: pytest-smoke-test
-        name: Run smoke tests
-        entry: bash -c 'uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-          SERVER_PID=$!;
-          sleep 3;
-          uv run pytest tests/test_fastapi_endpoints.py::TestFastAPIEndpoints::test_root_endpoint -v;
-          TEST_RESULT=$?;
-          kill $SERVER_PID 2>/dev/null || true;
-          exit $TEST_RESULT'
+      - id: pytest-integration-tests
+        name: Run integration tests
+        entry: bash tests/utils/test_runners/pre-commit-tests.sh
         language: system
         pass_filenames: false
         always_run: true
