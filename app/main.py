@@ -1,19 +1,59 @@
+"""
+GenAI API
+
+FastAPI application providing a simple API for GenAI.
+
+The API is available under `/api/v1` and provides endpoints for:
+
+* `/health`: A health check endpoint that returns a success message if the API is running.
+* `/hello`: An example endpoint that returns a greeting message.
+
+The API documentation is available under `/docs` and `/redoc`.
+
+To run this application:
+
+1. Ensure you are in the root directory of the project.
+2. Activate your virtual environment: `source .venv/bin/activate`.
+3. Run: `uvicorn app.main:app --reload`.
+
+"""
+
 from fastapi import FastAPI
 from app.api.v1 import api_router
+import uvicorn
 
-app = FastAPI(title="GenAI API", version="1.0.0")
+app = FastAPI(
+    title="GenAI API",
+    version="1.0.0",
+    description="A simple API for GenAI",
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
 
 app.include_router(api_router, prefix="/api/v1")
 
+
 @app.get("/")
 async def root():
+    """
+    Root endpoint that returns a message.
+
+    Returns:
+        dict: A dictionary containing a message.
+    """
     return {"message": "GenAI API"}
+
 
 @app.get("/health")
 async def health_check():
+    """
+    Health check endpoint that returns a success message if the API is running.
+
+    Returns:
+        dict: A dictionary containing a status and a message.
+    """
     return {"status": "healthy", "message": "API is running successfully"}
 
-# To run this application:
-# Ensure you are in the root directory of the project
-# Activate your virtual environment: source .venv/bin/activate
-# Run: uvicorn app.main:app --reload
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

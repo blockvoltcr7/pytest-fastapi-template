@@ -4,11 +4,19 @@ This guide provides the **easiest and fastest way** to deploy your FastAPI appli
 
 ## 📋 Pre-deployment Checklist
 
-✅ FastAPI application configured in `app/main.py`  
-✅ Dependencies listed in `requirements.txt`  
-✅ `render.yaml` configuration file created  
-✅ Health check endpoint added (`/health`)  
-✅ All tests passing with pytest  
+✅ FastAPI application configured in `app/main.py`
+✅ Dependencies listed in `requirements.txt` (generated from `pyproject.toml`)
+✅ `render.yaml` configuration file created
+✅ Health check endpoint added (`/health`)
+✅ All tests passing with pytest
+
+## 📦 Package Management Note
+
+This project uses **UV package manager** for local development but includes a `requirements.txt` file for cloud deployment compatibility:
+
+- **Local Development**: Use `uv sync` and `uv run` commands
+- **Cloud Deployment**: Render uses `pip install -r requirements.txt`
+- **Sync Process**: Run `uv pip freeze > requirements.txt` to update deployment dependencies
 
 ## 📝 Prerequisite: Create a Render.com Account
 
@@ -173,8 +181,8 @@ After successful deployment:
 
 ---
 
-**Deployment Status**: ✅ Ready for deployment  
-**Estimated Deploy Time**: 2-3 minutes  
-**Expected URL**: `https://your-app-name.onrender.com`  
+**Deployment Status**: ✅ Ready for deployment
+**Estimated Deploy Time**: 2-3 minutes
+**Expected URL**: `https://your-app-name.onrender.com`
 
-Happy deploying! 🎉 
+Happy deploying! 🎉

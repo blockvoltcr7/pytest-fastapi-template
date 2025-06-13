@@ -4,12 +4,12 @@ This guide provides the **complete deployment strategy** for your FastAPI applic
 
 ## 🎯 Why Railway Over Other Platforms?
 
-✅ **No Sleep Mode**: Unlike Render's free tier, Railway doesn't force apps to sleep  
-✅ **Superior UX**: Users consistently report the best deployment experience  
-✅ **Multiple Options**: Different deployment methods with Docker support  
-✅ **Auto-Detection**: Automatically detects and configures your app  
-✅ **Built-in Networking**: Easy service-to-service communication  
-✅ **Better Performance**: Faster deployments and more reliable infrastructure  
+✅ **No Sleep Mode**: Unlike Render's free tier, Railway doesn't force apps to sleep
+✅ **Superior UX**: Users consistently report the best deployment experience
+✅ **Multiple Options**: Different deployment methods with Docker support
+✅ **Auto-Detection**: Automatically detects and configures your app
+✅ **Built-in Networking**: Easy service-to-service communication
+✅ **Better Performance**: Faster deployments and more reliable infrastructure
 
 ## 🚀 Getting Started with Railway
 
@@ -27,11 +27,19 @@ This guide provides the **complete deployment strategy** for your FastAPI applic
 
 ## 📋 Pre-deployment Checklist
 
-✅ FastAPI application configured in `app/main.py`  
-✅ Dependencies listed in `requirements.txt`  
-✅ `railway.json` configuration file created  
-✅ Health check endpoint added (`/health`)  
-✅ Railway-optimized `Dockerfile.railway` ready  
+✅ FastAPI application configured in `app/main.py`
+✅ Dependencies listed in `requirements.txt` (generated from `pyproject.toml`)
+✅ `railway.json` configuration file created
+✅ Health check endpoint added (`/health`)
+✅ Railway-optimized `Dockerfile.railway` ready
+
+## 📦 Package Management Note
+
+This project uses **UV package manager** for local development but includes a `requirements.txt` file for cloud deployment compatibility:
+
+- **Local Development**: Use `uv sync` and `uv run` commands
+- **Cloud Deployment**: Railway/Docker uses `pip install -r requirements.txt`
+- **Sync Process**: Run `uv pip freeze > requirements.txt` to update deployment dependencies
 
 ## ⚙️ Required Configuration Files
 
@@ -196,8 +204,8 @@ If you see errors like `Invalid value for '--port': '$PORT' is not a valid integ
 
 ---
 
-**Deployment Status**: ✅ Railway-Ready  
-**Estimated Deploy Time**: 2-3 minutes  
+**Deployment Status**: ✅ Railway-Ready
+**Estimated Deploy Time**: 2-3 minutes
 **Support**: [Railway Support](https://railway.app/support)
 
-**All aboard the Railway! 🚄✨** 
+**All aboard the Railway! 🚄✨**

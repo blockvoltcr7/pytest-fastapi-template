@@ -1,0 +1,23 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: pytest-smoke-test
+        name: Run smoke tests
+        entry: bash -c 'uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          SERVER_PID=$!;
+          sleep 3;
+          uv run pytest tests/test_fastapi_endpoints.py::TestFastAPIEndpoints::test_root_endpoint -v;
+          TEST_RESULT=$?;
+          kill $SERVER_PID 2>/dev/null || true;
+          exit $TEST_RESULT'
+        language: system
+        pass_filenames: false
+        always_run: true
