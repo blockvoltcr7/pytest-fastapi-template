@@ -47,7 +47,7 @@ class TestFastAPIEndpoints:
             response = session.get(f"{api_base_url}/api/v1/hello")
 
         with allure.step("Verify successful status code"):
-            assert response.status_code == 404
+            assert response.status_code == 200
             allure.attach(
                 str(response.status_code),
                 name="Status Code",

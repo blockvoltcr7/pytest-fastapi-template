@@ -28,4 +28,4 @@ else
   echo -e "${GREEN}Pytest tests passed.${NC}"
 fi
 
-exit 0
+exit $TEST_RESULT
