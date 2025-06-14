@@ -178,7 +178,7 @@ Environment-specific configurations are stored in `tests/config/environments/`.
    ```bash
    # Ensure virtual environment is activated
    source .venv/bin/activate
-   
+
    # Start the server on port 8000
    uvicorn app.main:app --reload
    ```
@@ -242,7 +242,7 @@ All test runners automatically generate and serve Allure reports. The reports in
 2. **Missing dependencies**:
    ```bash
    uv pip install pytest allure-pytest
-   
+
    # Install Allure CLI:
    # macOS: brew install allure
    # Windows: Download from GitHub releases
@@ -269,4 +269,4 @@ All test runners automatically generate and serve Allure reports. The reports in
 
 ---
 
-**Remember**: Always run from the project root directory! 🎯 
+**Remember**: Always run from the project root directory! 🎯

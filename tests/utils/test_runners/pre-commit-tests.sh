@@ -16,16 +16,25 @@ sleep 3 # Give server time to start
 
 echo "Running integration tests..."
 # Run pytest and capture the output and exit code
-TEST_OUTPUT=$(uv run pytest tests/test_fastapi_endpoints.py -v 2>&1)
+# Ensure we are running from the project root
+top_dir="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
+cd "$top_dir"
+
+# Run smoke tests directly using pytest
+TEST_OUTPUT=$(uv run pytest -m smoke tests/endpoints/test_fastapi_endpoints.py -v 2>&1)
 TEST_RESULT=$?
 
 # Always print the test output
 echo "$TEST_OUTPUT"
 
+# Check if tests failed
 if [ $TEST_RESULT -ne 0 ]; then
   echo -e "${YELLOW}Warning: Pytest tests failed. This will not block the commit.${NC}"
 else
   echo -e "${GREEN}Pytest tests passed.${NC}"
 fi
 
+# Stop the server
+kill $SERVER_PID
 exit $TEST_RESULT
