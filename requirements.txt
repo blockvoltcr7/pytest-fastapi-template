@@ -38,7 +38,6 @@ docker==7.1.0
 docstring-parser==0.16
 durationpy==0.10
 elevenlabs==2.3.0
-embedchain==0.0.73
 et-xmlfile==2.0.0
 executing==2.2.0
 fastapi==0.115.12
