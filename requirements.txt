@@ -157,7 +157,7 @@ pyproject-hooks==1.2.0
 pyright==1.1.402
 pysbd==0.3.4
 pytest==8.4.0
--e file:///Users/samisabir-idrissi/dev/ssiautomations/pytest-fastapi-template
+-e .
 pytest-html==4.1.1
 pytest-metadata==3.1.1
 python-dateutil==2.9.0.post0
