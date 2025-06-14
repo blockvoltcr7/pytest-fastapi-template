@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------
 # render.yaml
-# 
+#
 # This file defines the infrastructure and deployment settings for
 # deploying your FastAPI application to Render.com.
 #
@@ -14,11 +14,10 @@
 services:
   - type: web  # This service will be exposed to the web (HTTP)
     name: genai-fastapi  # Name of your web service on Render
-    runtime: python  # Use the Python runtime environment
-    buildCommand: pip install -r requirements.txt  # Install dependencies before starting
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT  # Start FastAPI with Uvicorn
+    runtime: docker  # Use Docker runtime environment
+    dockerfilePath: ./Dockerfile  # Path to Dockerfile
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
       - key: ENVIRONMENT
-        value: production 
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false  # This tells Render to expect you to set this manually for security
