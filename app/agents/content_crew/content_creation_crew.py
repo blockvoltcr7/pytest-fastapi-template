@@ -4,11 +4,16 @@ from app.tools.content_tools.trend_tools import ContentTrendTools
 from typing import List, Dict, Optional
 from datetime import datetime
 import json
+import os
 
 class ContentCreationCrew:
     """Content Creation Crew for trend-based content optimization"""
 
     def __init__(self):
+        # Check for required environment variables
+        if not os.getenv("OPENAI_API_KEY"):
+            print("Warning: OPENAI_API_KEY not found. CrewAI may require this for embeddings.")
+
         self.tools = ContentTrendTools()
         self._setup_agents()
 
@@ -219,7 +224,8 @@ class ContentCreationCrew:
                 content_task
             ],
             process=Process.sequential,
-            verbose=True
+            verbose=True,
+            memory=False  # Disable memory to avoid OpenAI embedding dependency
         )
 
         try:
