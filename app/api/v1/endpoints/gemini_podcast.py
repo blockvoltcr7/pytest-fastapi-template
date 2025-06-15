@@ -1,9 +1,14 @@
 """Gemini TTS Podcast API endpoint."""
 
-import os
-from fastapi import APIRouter, HTTPException, Response
+import logging
+from fastapi import APIRouter, HTTPException, Response, Header
 from pydantic import BaseModel, Field
-from tests.utils.gemini.gemini_tts_utils import create_gemini_client, generate_podcast_audio_binary
+from typing import Annotated
+from tests.utils.gemini.gemini_tts_utils import create_gemini_client_with_key, generate_podcast_audio_binary
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -24,7 +29,7 @@ Speaker 2: And I'm Kevin, delighted to join you. Let's dive into the conscious c
 @router.post(
     "/podcast",
     summary="Generate TTS Podcast Audio",
-    description="Generate multi-speaker podcast audio using Google Gemini TTS API. Returns WAV audio data as binary response.",
+    description="Generate multi-speaker podcast audio using Google Gemini TTS API. Returns WAV audio data as binary response. Requires a valid Google/Gemini API key in the X-API-Key header.",
     response_description="WAV audio file as binary data",
     responses={
         200: {
@@ -32,11 +37,15 @@ Speaker 2: And I'm Kevin, delighted to join you. Let's dive into the conscious c
             "description": "Generated podcast audio as WAV file"
         },
         400: {"description": "Invalid input text format"},
-        500: {"description": "Internal server error - check GEMINI_API_KEY configuration"},
+        401: {"description": "Missing or invalid API key in X-API-Key header"},
+        500: {"description": "Internal server error"},
         502: {"description": "Gemini API error"}
     }
 )
-async def generate_podcast(request: PodcastRequest):
+async def generate_podcast(
+    request: PodcastRequest,
+    x_api_key: Annotated[str, Header(alias="X-API-Key", description="Your Google/Gemini API key")]
+):
     """
     Generate multi-speaker podcast audio from text dialogue.
 
@@ -45,20 +54,24 @@ async def generate_podcast(request: PodcastRequest):
 
     Args:
         request: PodcastRequest containing the dialogue text
+        x_api_key: Google/Gemini API key provided in X-API-Key header
 
     Returns:
         Response: Binary WAV audio data with appropriate headers
 
     Raises:
-        HTTPException: For various error conditions (400, 500, 502)
+        HTTPException: For various error conditions (400, 401, 500, 502)
     """
-    # Check for API key
-    api_key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
-    if not api_key:
+    # Validate API key
+    if not x_api_key or not x_api_key.strip():
+        logger.error("No API key provided in X-API-Key header")
         raise HTTPException(
-            status_code=500,
-            detail="API key not configured. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable."
+            status_code=401,
+            detail="API key required. Please provide your Google/Gemini API key in the X-API-Key header."
         )
+
+    api_key = x_api_key.strip()
+    logger.info(f"API key provided via header (length: {len(api_key)})")
 
     # Validate text contains speakers
     if "Speaker 1:" not in request.text or "Speaker 2:" not in request.text:
@@ -68,11 +81,15 @@ async def generate_podcast(request: PodcastRequest):
         )
 
     try:
-        # Create Gemini client
-        client = create_gemini_client()
+        # Create Gemini client with user's API key
+        logger.info("Creating Gemini client with user-provided API key...")
+        client = create_gemini_client_with_key(api_key)
+        logger.info("Gemini client created successfully")
 
         # Generate audio as binary data
+        logger.info(f"Generating audio for text of length: {len(request.text)}")
         audio_data = generate_podcast_audio_binary(client, request.text)
+        logger.info(f"Audio generation successful, size: {len(audio_data)} bytes")
 
         # Return binary response with appropriate headers
         return Response(
@@ -86,8 +103,9 @@ async def generate_podcast(request: PodcastRequest):
 
     except ValueError as e:
         # Handle specific ValueError from our utility function
-        if "API key not found" in str(e):
-            raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"ValueError occurred: {str(e)}")
+        if "API key not valid" in str(e) or "INVALID_ARGUMENT" in str(e):
+            raise HTTPException(status_code=401, detail="Invalid API key. Please check your Google/Gemini API key.")
         elif "No audio data was generated" in str(e):
             raise HTTPException(status_code=502, detail="Failed to generate audio from Gemini API")
         else:
@@ -95,7 +113,18 @@ async def generate_podcast(request: PodcastRequest):
 
     except Exception as e:
         # Handle unexpected errors from Gemini API or other issues
-        raise HTTPException(
-            status_code=502,
-            detail=f"Gemini API error: {str(e)}"
-        )
+        logger.error(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Error type: {type(e).__name__}")
+
+        # Check if it's an API key related error
+        error_str = str(e).lower()
+        if "api key" in error_str or "invalid_argument" in error_str or "authentication" in error_str:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid API key. Please check your Google/Gemini API key."
+            )
+        else:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Gemini API error: {str(e)}"
+            )

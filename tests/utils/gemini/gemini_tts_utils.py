@@ -3,15 +3,21 @@
 import os
 import glob
 import allure
+import logging
 from pathlib import Path
 from typing import List, Optional
 from google import genai
 from google.genai import types
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 
 def create_gemini_client() -> genai.Client:
     """
     Create a Gemini client with API key from environment variables.
+
+    DEPRECATED: Use create_gemini_client_with_key() instead for better security.
 
     Returns:
         genai.Client: A configured Gemini client instance
@@ -20,12 +26,51 @@ def create_gemini_client() -> genai.Client:
         ValueError: If API key is not found in environment
     """
     # Check for API key in multiple environment variable names
-    api_key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
+    google_api_key = os.getenv('GOOGLE_API_KEY')
+    gemini_api_key = os.getenv('GEMINI_API_KEY')
+
+    logger.info(f"create_gemini_client: Checking environment variables")
+    logger.info(f"create_gemini_client: GOOGLE_API_KEY present: {bool(google_api_key)}")
+    logger.info(f"create_gemini_client: GEMINI_API_KEY present: {bool(gemini_api_key)}")
+
+    api_key = google_api_key or gemini_api_key
 
     if not api_key:
+        logger.error("create_gemini_client: No API key found in environment variables")
         raise ValueError("API key not found. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable.")
 
-    return genai.Client(api_key=api_key)
+    return create_gemini_client_with_key(api_key)
+
+
+def create_gemini_client_with_key(api_key: str) -> genai.Client:
+    """
+    Create a Gemini client with the provided API key.
+
+    Args:
+        api_key: Google/Gemini API key
+
+    Returns:
+        genai.Client: A configured Gemini client instance
+
+    Raises:
+        ValueError: If API key is invalid or client creation fails
+    """
+    if not api_key or not api_key.strip():
+        logger.error("create_gemini_client_with_key: No API key provided")
+        raise ValueError("API key is required")
+
+    api_key = api_key.strip()
+    logger.info(f"create_gemini_client_with_key: Using API key with length {len(api_key)}")
+
+    try:
+        logger.info("create_gemini_client_with_key: About to create genai.Client...")
+        client = genai.Client(api_key=api_key)
+        logger.info("create_gemini_client_with_key: Gemini client created successfully")
+        return client
+    except Exception as e:
+        logger.error(f"create_gemini_client_with_key: Failed to create client: {str(e)}")
+        logger.error(f"create_gemini_client_with_key: Exception type: {type(e).__name__}")
+        raise ValueError(f"Failed to create Gemini client: {str(e)}")
 
 
 def get_coffee_podcast_content() -> str:
@@ -248,6 +293,7 @@ def generate_podcast_audio_binary(client: genai.Client, text_content: str) -> by
     Raises:
         ValueError: If no audio data is generated
     """
+    logger.info(f"generate_podcast_audio_binary: Starting audio generation for text length: {len(text_content)}")
     import mimetypes
     import struct
     from io import BytesIO
@@ -305,38 +351,51 @@ def generate_podcast_audio_binary(client: genai.Client, text_content: str) -> by
     config = create_tts_config()
     audio_chunks = []
 
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=contents,
-        config=config,
-    ):
-        if (
-            chunk.candidates is None
-            or chunk.candidates[0].content is None
-            or chunk.candidates[0].content.parts is None
+    logger.info(f"generate_podcast_audio_binary: Starting streaming request to Gemini API with model: {model}")
+
+    try:
+        for chunk in client.models.generate_content_stream(
+            model=model,
+            contents=contents,
+            config=config,
         ):
-            continue
+            if (
+                chunk.candidates is None
+                or chunk.candidates[0].content is None
+                or chunk.candidates[0].content.parts is None
+            ):
+                continue
 
-        if chunk.candidates[0].content.parts[0].inline_data and chunk.candidates[0].content.parts[0].inline_data.data:
-            inline_data = chunk.candidates[0].content.parts[0].inline_data
-            data_buffer = inline_data.data
-            file_extension = mimetypes.guess_extension(inline_data.mime_type)
+            if chunk.candidates[0].content.parts[0].inline_data and chunk.candidates[0].content.parts[0].inline_data.data:
+                inline_data = chunk.candidates[0].content.parts[0].inline_data
+                data_buffer = inline_data.data
+                file_extension = mimetypes.guess_extension(inline_data.mime_type)
 
-            if file_extension is None:
-                data_buffer = convert_to_wav(inline_data.data, inline_data.mime_type)
+                if file_extension is None:
+                    data_buffer = convert_to_wav(inline_data.data, inline_data.mime_type)
 
-            audio_chunks.append(data_buffer)
+                audio_chunks.append(data_buffer)
+                logger.info(f"generate_podcast_audio_binary: Received audio chunk {len(audio_chunks)}, size: {len(data_buffer)} bytes")
+
+    except Exception as e:
+        logger.error(f"generate_podcast_audio_binary: Error during streaming: {str(e)}")
+        raise
+
+    logger.info(f"generate_podcast_audio_binary: Completed streaming, received {len(audio_chunks)} audio chunks")
 
     if not audio_chunks:
+        logger.error("generate_podcast_audio_binary: No audio data was generated from the provided text")
         raise ValueError("No audio data was generated from the provided text")
 
     # Combine all audio chunks into a single WAV file
     if len(audio_chunks) == 1:
+        logger.info(f"generate_podcast_audio_binary: Returning single audio chunk of size: {len(audio_chunks[0])} bytes")
         return audio_chunks[0]
     else:
         # For multiple chunks, we need to combine them properly
         # This is a simplified approach - for production, you might want more sophisticated audio concatenation
         combined_audio = b"".join(audio_chunks)
+        logger.info(f"generate_podcast_audio_binary: Combined {len(audio_chunks)} chunks into {len(combined_audio)} bytes")
         return combined_audio
 
 
