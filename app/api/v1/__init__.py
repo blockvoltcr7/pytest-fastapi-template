@@ -5,7 +5,7 @@ This module creates a FastAPI router that includes all v1 endpoints.
 """
 
 from fastapi import APIRouter
-from app.api.v1.endpoints import hello_world_v1
+from app.api.v1.endpoints import hello_world_v1, gemini_podcast
 
 
 # Create the main v1 router
@@ -18,3 +18,4 @@ api_router = APIRouter(
 
 # Include routes from endpoints
 api_router.include_router(hello_world_v1.router, tags=["hello"])
+api_router.include_router(gemini_podcast.router, prefix="/gemini", tags=["gemini-tts"])

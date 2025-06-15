@@ -23,15 +23,42 @@ We've created a convenience script in the project root for the easiest possible 
 
 ### Prerequisites
 
+---
+
+## Gemini Podcast Test Runner 🗣️☕
+
+A dedicated script is provided for running the Gemini podcast AI tests and generating an Allure report automatically.
+
+**Script location:** `tests/utils/test_runners/run_gemini_podcast_tests.sh`
+
+### Usage
+
+```bash
+# From the project root, run:
+./tests/utils/test_runners/run_gemini_podcast_tests.sh
+```
+
+- This will:
+  - Clean previous Allure and pytest results
+  - Run only the Gemini podcast test suite
+  - Generate and open the Allure report in your browser
+
+> **Tip:** If you get a permission error, run:
+> ```bash
+> chmod +x tests/utils/test_runners/run_gemini_podcast_tests.sh
+> ```
+
+---
+
 1. **Install Dependencies**:
    ```bash
    # Install Python testing dependencies
    uv pip install pytest allure-pytest
-   
+
    # Install Allure CLI (choose one):
    # macOS:
    brew install allure
-   
+
    # Other platforms:
    # Download from: https://github.com/allure-framework/allure2/releases
    ```
@@ -206,7 +233,7 @@ Use these markers with the `-k` option to filter tests:
 ### Available Environments
 
 - **dev** (default) - Development environment
-- **uat** - User Acceptance Testing environment  
+- **uat** - User Acceptance Testing environment
 - **prod** - Production environment
 
 ### Environment Setup
@@ -283,7 +310,7 @@ Each script has built-in help:
    # ❌ Wrong
    cd tests/utils/test_runners
    ./run_all_tests.sh
-   
+
    # ✅ Correct
    cd /path/to/project/root
    ./tests/utils/test_runners/run_all_tests.sh
@@ -352,7 +379,7 @@ Run with verbose pytest output for debugging:
 - All scripts support passing additional pytest arguments
 - Default environment is always `dev` for safety
 - Scripts validate dependencies and provide installation instructions
-- Exit codes match pytest exit codes for CI/CD integration 
+- Exit codes match pytest exit codes for CI/CD integration
 
 ## Test Organization 📋
 
@@ -437,4 +464,4 @@ Tests should use the following Allure decorators for proper organization:
 @pytest.mark.smoke                    # Pytest marker for smoke tests
 def test_example():
     pass
-``` 
+```

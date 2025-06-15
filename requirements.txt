@@ -29,7 +29,6 @@ coloredlogs==15.0.1
 crewai==0.130.0
 crewai-tools==0.47.1
 cryptography==45.0.4
-embedchain>=0.1.114
 dataclasses-json==0.6.7
 decorator==5.2.1
 deprecation==2.1.0
@@ -38,7 +37,9 @@ distro==1.9.0
 docker==7.1.0
 docstring-parser==0.16
 durationpy==0.10
+ecdsa==0.19.1
 elevenlabs==2.3.0
+embedchain==0.1.128
 et-xmlfile==2.0.0
 executing==2.2.0
 fastapi==0.115.12
@@ -48,6 +49,7 @@ flatbuffers==25.2.10
 frozenlist==1.7.0
 fsspec==2025.5.1
 google-auth==2.40.3
+google-genai==1.20.0
 googleapis-common-protos==1.70.0
 gptcache==0.1.44
 grpcio==1.73.0
@@ -127,6 +129,7 @@ overrides==7.7.0
 packaging==23.2
 pandas==2.3.0
 parso==0.8.4
+passlib==1.7.4
 pdfminer-six==20250506
 pdfplumber==0.11.7
 pexpect==4.9.0
@@ -157,10 +160,13 @@ pyproject-hooks==1.2.0
 pyright==1.1.402
 pysbd==0.3.4
 pytest==8.4.0
+-e file:///Users/samisabir-idrissi/dev/ssiautomations/pytest-fastapi-template
 pytest-html==4.1.1
 pytest-metadata==3.1.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
+python-jose==3.5.0
+python-multipart==0.0.20
 pytube==15.0.0
 pytz==2025.2
 pyvis==0.3.2
