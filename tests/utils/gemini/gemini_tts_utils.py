@@ -17,12 +17,13 @@ def create_gemini_client() -> genai.Client:
         genai.Client: A configured Gemini client instance
 
     Raises:
-        ValueError: If GEMINI_API_KEY is not found in environment
+        ValueError: If API key is not found in environment
     """
-    api_key = os.getenv('GEMINI_API_KEY')
+    # Check for API key in multiple environment variable names
+    api_key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
 
     if not api_key:
-        raise ValueError("GEMINI_API_KEY not found in environment variables. Please set it in .env file.")
+        raise ValueError("API key not found. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable.")
 
     return genai.Client(api_key=api_key)
 
