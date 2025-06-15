@@ -53,10 +53,11 @@ async def generate_podcast(request: PodcastRequest):
         HTTPException: For various error conditions (400, 500, 502)
     """
     # Check for API key
-    if not os.getenv('GEMINI_API_KEY'):
+    api_key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
+    if not api_key:
         raise HTTPException(
             status_code=500,
-            detail="GEMINI_API_KEY not configured. Please set the environment variable."
+            detail="API key not configured. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable."
         )
 
     # Validate text contains speakers
@@ -85,7 +86,7 @@ async def generate_podcast(request: PodcastRequest):
 
     except ValueError as e:
         # Handle specific ValueError from our utility function
-        if "GEMINI_API_KEY not found" in str(e):
+        if "API key not found" in str(e):
             raise HTTPException(status_code=500, detail=str(e))
         elif "No audio data was generated" in str(e):
             raise HTTPException(status_code=502, detail="Failed to generate audio from Gemini API")
