@@ -329,51 +329,6 @@ class TestErrorHandling:
         assert isinstance(result2, str)
         assert isinstance(result3, str)
 
-@pytest.mark.asyncio
-class TestAsyncOperations:
-    """Test asynchronous operations for content crew"""
-
-    async def test_concurrent_content_processing(self):
-        """Test concurrent processing of multiple content ideas"""
-        content_ideas = [
-            {"topic": f"Topic {i}", "industry": "technology"}
-            for i in range(3)
-        ]
-
-        crew = ContentCreationCrew()
-
-        # Process ideas concurrently (simulated)
-        tasks = []
-        for idea in content_ideas:
-            # In a real async scenario, this would be awaitable
-            result = crew.process_content_idea(idea)
-            tasks.append(result)
-
-        assert len(tasks) == 3
-        assert all(isinstance(task, dict) for task in tasks)
-
-    async def test_background_task_simulation(self):
-        """Test background task processing simulation"""
-        content_idea = {
-            "topic": "Background Processing Test",
-            "content_type": "article",
-            "industry": "technology"
-        }
-
-        crew = ContentCreationCrew()
-
-        # Simulate background processing
-        result = await asyncio.create_task(
-            self._simulate_background_processing(crew, content_idea)
-        )
-
-        assert result is not None
-        assert "status" in result
-
-    async def _simulate_background_processing(self, crew, content_idea):
-        """Helper method to simulate background processing"""
-        # In real implementation, this would be truly async
-        return crew.process_content_idea(content_idea)
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

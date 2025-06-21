@@ -8,6 +8,7 @@ client = TestClient(app)
 class TestContentCrewAPI:
     """Test suite for Content Crew API endpoints using FastAPI TestClient"""
 
+    @pytest.mark.smoke
     def test_content_creation_endpoint(self):
         """Test the main content creation endpoint"""
         payload = {
@@ -64,6 +65,7 @@ class TestContentCrewAPI:
         assert len(data["processed_ideas"]) == 2
         assert data["status"] in ["success", "partial_success"]
 
+    @pytest.mark.smoke
     def test_health_check_endpoint(self):
         """Test content service health check"""
         response = client.get("/api/v1/content/health")
@@ -111,7 +113,6 @@ class TestContentCrewAPIValidation:
 
         # Should return validation error
         assert response.status_code == 422
-
 
 
     def test_content_creation_with_invalid_json(self):
