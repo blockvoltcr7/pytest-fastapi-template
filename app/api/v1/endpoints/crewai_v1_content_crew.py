@@ -1,21 +1,15 @@
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException
 from app.api.v1.schemas.content.content_schemas import (
     ContentCreationRequest,
     ContentCreationResponse,
-    ContentIdea,
-    AsyncTaskResponse
+    ContentIdea
 )
 from app.agents.content_crew.content_creation_crew import ContentCreationCrew
 from app.tools.content_tools.trend_tools import ContentTrendTools
 from typing import Dict, List
 import time
-import asyncio
-import uuid
 
 router = APIRouter()
-
-# In-memory task storage (in production, use a proper database)
-task_status = {}
 
 @router.post(
     "/content/create",
@@ -81,46 +75,6 @@ async def create_content(request: ContentCreationRequest) -> ContentCreationResp
             detail=f"Content creation failed: {str(e)}"
         )
 
-@router.post(
-    "/content/create-async",
-    summary="Create content asynchronously",
-    description="Start async content creation task (for long-running processes)",
-    response_model=AsyncTaskResponse,
-)
-async def create_content_async(
-    request: ContentCreationRequest,
-    background_tasks: BackgroundTasks
-) -> AsyncTaskResponse:
-    """
-    Start asynchronous content creation for N8N webhook integration
-
-    Args:
-        request: Content creation request
-        background_tasks: FastAPI background tasks
-
-    Returns:
-        AsyncTaskResponse: Task ID and status check URL
-    """
-    task_id = str(uuid.uuid4())
-    task_status[task_id] = {
-        "status": "pending",
-        "progress": 0,
-        "result": None,
-        "errors": []
-    }
-
-    # Add background task
-    background_tasks.add_task(
-        process_content_background,
-        task_id,
-        request
-    )
-
-    return AsyncTaskResponse(
-        task_id=task_id,
-        status="task_started",
-        check_status_url=""  # Status endpoint has been removed
-    )
 
 
 async def process_content_background(task_id: str, request: ContentCreationRequest):
@@ -209,27 +163,3 @@ async def content_service_health() -> Dict:
             "error": str(e),
             "timestamp": time.time()
         }
-
-@router.delete(
-    "/content/tasks/{task_id}",
-    summary="Clean up completed task",
-    description="Remove a completed task from memory",
-)
-async def cleanup_task(task_id: str) -> Dict:
-    """
-    Clean up a completed task from memory
-
-    Args:
-        task_id: Task identifier to clean up
-
-    Returns:
-        Dict: Cleanup status
-    """
-    if task_id in task_status:
-        del task_status[task_id]
-        return {"status": "cleaned", "task_id": task_id}
-    else:
-        raise HTTPException(
-            status_code=404,
-            detail="Task not found"
-        )

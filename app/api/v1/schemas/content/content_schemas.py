@@ -77,18 +77,3 @@ class ContentCreationResponse(BaseModel):
                 "errors": []
             }
         }
-
-
-class AsyncTaskResponse(BaseModel):
-    task_id: str = Field(..., description="Unique identifier for the async task")
-    status: str = Field(..., description="Current status of the task")
-    check_status_url: str = Field(..., description="URL to check task status")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "task_id": "12345-abcde-67890",
-                "status": "task_started",
-                "check_status_url": "/api/v1/content/status/12345-abcde-67890"
-            }
-        }

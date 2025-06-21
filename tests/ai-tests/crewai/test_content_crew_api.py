@@ -64,30 +64,6 @@ class TestContentCrewAPI:
         assert len(data["processed_ideas"]) == 2
         assert data["status"] in ["success", "partial_success"]
 
-    def test_async_content_creation(self):
-        """Test async content creation endpoint"""
-        payload = {
-            "content_ideas": [
-                {
-                    "topic": "Future of AI",
-                    "content_type": "research paper",
-                    "industry": "technology",
-                    "word_count": "2000-3000"
-                }
-            ]
-        }
-
-        response = client.post("/api/v1/content/create-async", json=payload)
-
-        assert response.status_code == 200
-        data = response.json()
-
-        assert "task_id" in data
-        assert "status" in data
-        assert "check_status_url" in data
-        assert data["status"] == "task_started"
-
-
     def test_health_check_endpoint(self):
         """Test content service health check"""
         response = client.get("/api/v1/content/health")
@@ -104,42 +80,6 @@ class TestContentCrewAPI:
         assert data["service"] == "content_creation_crew"
         assert data["agents_count"] == 4
         assert data["status"] in ["healthy", "unhealthy"]
-
-    def test_task_cleanup_endpoint(self):
-        """Test task cleanup functionality"""
-        # First create an async task
-        payload = {
-            "content_ideas": [
-                {
-                    "topic": "Test Cleanup",
-                    "content_type": "blog post"
-                }
-            ]
-        }
-
-        create_response = client.post("/api/v1/content/create-async", json=payload)
-        assert create_response.status_code == 200
-
-        task_id = create_response.json()["task_id"]
-
-        # Wait a moment for task to be processed or at least started
-        import time
-        time.sleep(1)
-
-        # Test cleanup
-        cleanup_response = client.delete(f"/api/v1/content/tasks/{task_id}")
-
-        assert cleanup_response.status_code == 200
-        cleanup_data = cleanup_response.json()
-
-        assert "status" in cleanup_data
-        assert "task_id" in cleanup_data
-        assert cleanup_data["status"] == "cleaned"
-        assert cleanup_data["task_id"] == task_id
-
-        # Verify task is actually cleaned up
-        status_response = client.get(f"/api/v1/content/status/{task_id}")
-        assert status_response.status_code == 404
 
 class TestContentCrewAPIValidation:
     """Test API validation and error handling"""
