@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 # Dependency Management Rules Project
@@ -15,13 +15,14 @@ This document outlines requirements for managing Python dependencies in this pro
 
 ## Package Installation
 
-- Use `uv pip install <package>` for installing individual packages.
+- Use `uv pip add <package>` for installing individual packages.
 - Always update requirements.in after adding new dependencies.
 - Use `uv pip compile requirements.in` to generate/update requirements.txt.
+- Use `uv sync` to synchronize the environment with `requirements.txt`.
 
 ```bash
 # CORRECT
-uv pip install allure-pytest
+uv pip add allure-pytest
 
 # INCORRECT
 pip install allure-pytest
@@ -43,6 +44,7 @@ source .venv/bin/activate  # On Unix/macOS
 
 ## Dependency Organization
 
+- `pyproject.toml` is used as the primary source for project metadata and dependencies.
 - Add direct dependencies to requirements.in
 - Never manually edit requirements.txt
 - Group dependencies logically in requirements.in with comments
@@ -92,17 +94,20 @@ When managing dependencies, AI assistants should:
 
 ```bash
 # Installing packages
-uv pip install <package>
+uv pip add <package>
 
 # Installing all packages from requirements.txt
-uv pip install -r requirements.txt
+uv pip add -r requirements.txt
 
 # Adding a package to requirements.in and updating requirements.txt
-uv pip install <package>
+uv pip add <package>
 # Then manually add to requirements.in
 uv pip compile requirements.in
 # Updating all dependencies
-uv pip compile --upgrade requirements.in
+uv pip compile --upgrade-package "*" requirements.in
+
+# Synchronizing the environment with requirements.txt
+uv sync
 
 # Ensuring environment exactly matches requirements.txt (installing, updating, and removing packages as needed)
 uv pip sync requirements.txt

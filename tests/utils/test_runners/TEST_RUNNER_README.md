@@ -53,7 +53,7 @@ A dedicated script is provided for running the Gemini podcast AI tests and gener
 1. **Install Dependencies**:
    ```bash
    # Install Python testing dependencies
-   uv pip install pytest allure-pytest
+   uv pip add pytest allure-pytest
 
    # Install Allure CLI (choose one):
    # macOS:
