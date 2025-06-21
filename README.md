@@ -56,7 +56,7 @@ The project is organized as follows:
 
 ### Prerequisites
 
-- Python 3.9+ (required for latest FastAPI and Pydantic versions)
+- Python 3.11+ (matches the pinned dependency set)
 - [uv](https://docs.astral.sh/uv/) (Python package installer and virtual environment manager)
 - Docker (optional, for containerized development and deployment)
 
@@ -94,7 +94,7 @@ uv --version
     ```bash
     uv sync
     ```
-    
+
     This single command:
     - Creates a virtual environment in `.venv/`
     - Installs all dependencies from `pyproject.toml` and `uv.lock`
@@ -105,7 +105,7 @@ uv --version
     ```bash
     # Copy the example environment file (if it exists)
     cp .env.example .env
-    
+
     # Edit .env and add your API keys
     # OPENAI_API_KEY=your_openai_api_key_here
     # ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
@@ -258,7 +258,7 @@ For maximum flexibility, you can run tests directly with pytest:
    ```bash
    # Option 1: Using uv run (recommended)
    uv run pytest -v -s
-   
+
    # Option 2: With activated virtual environment
    source .venv/bin/activate  # Unix/macOS
    # .venv\Scripts\activate    # Windows
@@ -269,7 +269,7 @@ For maximum flexibility, you can run tests directly with pytest:
    ```bash
    # Run tests and generate Allure results
    uv run pytest --alluredir=allure-results -v -s
-   
+
    # Serve the Allure report (opens in browser)
    allure serve allure-results
    ```
@@ -278,13 +278,13 @@ For maximum flexibility, you can run tests directly with pytest:
    ```bash
    # Run a specific test file
    uv run pytest tests/test_fastapi_endpoints.py -v
-   
+
    # Run a specific test method
    uv run pytest tests/test_fastapi_endpoints.py::TestFastAPIEndpoints::test_root_endpoint -v
-   
+
    # Run tests with specific markers
    uv run pytest -m api -v
-   
+
    # Run tests with keyword matching
    uv run pytest -k "test_hello" -v
    ```
@@ -302,11 +302,11 @@ For maximum flexibility, you can run tests directly with pytest:
 
 **1. `ModuleNotFoundError: No module named 'fastapi'`**
 - **Cause**: Dependencies not installed or virtual environment not set up
-- **Solution**: 
+- **Solution**:
   ```bash
   # Reinstall dependencies
   uv sync
-  
+
   # Or use uv run to run commands
   uv run uvicorn app.main:app --reload
   ```
@@ -318,18 +318,18 @@ For maximum flexibility, you can run tests directly with pytest:
   ```bash
   # Find and kill the process
   lsof -ti:8000 | xargs kill -9
-  
+
   # Or run on a different port
   uvicorn app.main:app --reload --port 8001
   ```
 
 **3. Import errors in tests**
 - **Cause**: Dependencies not installed or virtual environment not set up properly
-- **Solution**: 
+- **Solution**:
   ```bash
   # Reinstall all dependencies
   uv sync
-  
+
   # Verify installation
   uv run python -c "import app; print('App module available')"
   ```
@@ -340,7 +340,7 @@ For maximum flexibility, you can run tests directly with pytest:
   ```bash
   # In one terminal
   uv run uvicorn app.main:app --reload
-  
+
   # In another terminal
   uv run pytest --alluredir=allure-results -v -s
   ```
@@ -352,7 +352,7 @@ For maximum flexibility, you can run tests directly with pytest:
   # Copy the example file and add your API keys
   cp .env.example .env
   # Edit .env file and add: OPENAI_API_KEY=your_actual_api_key_here
-  
+
   # Test that environment loading works
   pytest tests/ai-tests/test_openai_integration.py -v
   ```
@@ -369,7 +369,7 @@ Before deploying to any platform:
    ```bash
    # Run all tests
    uv run pytest
-   
+
    # Verify the app starts correctly
    uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
    ```
@@ -378,7 +378,7 @@ Before deploying to any platform:
    ```bash
    # Add any production dependencies
    uv add gunicorn  # For production WSGI server
-   
+
    # Ensure lock file is up to date
    uv lock
    ```
@@ -465,10 +465,10 @@ Railway also supports UV for faster, more reliable deployments.
    ```bash
    # Install Railway CLI
    npm install -g @railway/cli
-   
+
    # Login to Railway
    railway login
-   
+
    # Deploy the project
    railway up
    ```
@@ -541,7 +541,7 @@ For production deployments:
    ```bash
    # Add production server
    uv add gunicorn
-   
+
    # Add performance monitoring (optional)
    uv add prometheus-client
    ```
@@ -681,4 +681,4 @@ Please ensure your code adheres to the project's coding standards and that all t
 
 ## License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details (if one exists, otherwise specify your chosen license). 
+This project is licensed under the MIT License - see the `LICENSE` file for details (if one exists, otherwise specify your chosen license).

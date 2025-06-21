@@ -183,12 +183,12 @@ This project uses `pyproject.toml` for configuration:
 name = "pytest-fastapi-template"
 version = "0.1.0"
 description = "FastAPI template with pytest testing"
-requires-python = ">=3.9"
-dependencies = [
-    "fastapi>=0.115.12",
-    "uvicorn>=0.34.2",
-    # ... other dependencies
-]
+requires-python = ">=3.11"
+
+# IMPORTANT: The `[project].dependencies` list is fully pinned (~200 packages)
+# and generated automatically by `uv add/remove`. Do NOT edit it by hand.
+# Always use `uv add <pkg>` or `uv remove <pkg>` and commit both
+# `pyproject.toml` and the updated `uv.lock`.
 
 [build-system]
 requires = ["hatchling"]

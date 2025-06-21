@@ -10,7 +10,7 @@ class FakeUserDatabase:
                 "username": "johndoe",
                 "full_name": "John Doe",
                 "email": "johndoe@example.com",
-                "hashed_password": get_password_hash("kskjh892jkjfd"),
+                "hashed_password": get_password_hash("password"),
                 "disabled": False,
             }
         }
