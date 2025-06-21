@@ -171,4 +171,4 @@ Current configuration:
 ---
 
 *Last updated: May 2025*
-*Deployment URL: https://pytest-fast-api-template-production.up.railway.app* 
+*Deployment URL: https://pytest-fast-api-template-production.up.railway.app*

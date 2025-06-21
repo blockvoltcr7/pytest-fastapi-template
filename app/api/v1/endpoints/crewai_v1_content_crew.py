@@ -3,10 +3,7 @@ from app.api.v1.schemas.content.content_schemas import (
     ContentCreationRequest,
     ContentCreationResponse,
     ContentIdea,
-    QuickTrendRequest,
-    QuickTrendResponse,
-    AsyncTaskResponse,
-    TaskStatusResponse
+    AsyncTaskResponse
 )
 from app.agents.content_crew.content_creation_crew import ContentCreationCrew
 from app.tools.content_tools.trend_tools import ContentTrendTools
@@ -122,38 +119,9 @@ async def create_content_async(
     return AsyncTaskResponse(
         task_id=task_id,
         status="task_started",
-        check_status_url=f"/api/v1/content/status/{task_id}"
+        check_status_url=""  # Status endpoint has been removed
     )
 
-@router.get(
-    "/content/status/{task_id}",
-    summary="Check content creation status",
-    description="Check the status of an async content creation task",
-    response_model=TaskStatusResponse,
-)
-async def check_content_status(task_id: str) -> TaskStatusResponse:
-    """
-    Check status of async content creation task
-
-    Args:
-        task_id: Unique task identifier
-
-    Returns:
-        TaskStatusResponse: Current task status and progress
-    """
-    if task_id not in task_status:
-        raise HTTPException(
-            status_code=404,
-            detail="Task not found"
-        )
-
-    task_data = task_status[task_id]
-    return TaskStatusResponse(
-        status=task_data["status"],
-        progress=task_data["progress"],
-        result=task_data.get("result"),
-        errors=task_data.get("errors", [])
-    )
 
 async def process_content_background(task_id: str, request: ContentCreationRequest):
     """
@@ -206,42 +174,6 @@ async def process_content_background(task_id: str, request: ContentCreationReque
             "errors": [str(e)]
         })
 
-@router.post(
-    "/content/quick-trends",
-    summary="Get quick trend analysis",
-    description="Get quick trend insights without full content creation",
-    response_model=QuickTrendResponse,
-)
-async def get_quick_trends(request: QuickTrendRequest) -> QuickTrendResponse:
-    """
-    Quick endpoint for trend analysis only
-
-    Args:
-        request: Quick trend analysis request
-
-    Returns:
-        QuickTrendResponse: Trend insights for the topic
-    """
-    try:
-        tools = ContentTrendTools()
-
-        # Get trends
-        trends = tools.search_trending_topics(request.industry, [request.topic])
-        social_trends = tools.search_social_trends(request.topic)
-
-        return QuickTrendResponse(
-            topic=request.topic,
-            industry=request.industry,
-            general_trends=trends[:500] if len(trends) > 500 else trends,  # First 500 chars
-            social_trends=social_trends[:500] if len(social_trends) > 500 else social_trends,
-            status="success"
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Trend analysis failed: {str(e)}"
-        )
 
 @router.get(
     "/content/health",

@@ -5,8 +5,7 @@ from app.agents.content_crew.content_creation_crew import ContentCreationCrew
 from app.tools.content_tools.trend_tools import ContentTrendTools
 from app.api.v1.schemas.content.content_schemas import (
     ContentIdea,
-    ContentCreationRequest,
-    QuickTrendRequest
+    ContentCreationRequest
 )
 
 class TestContentTrendTools:
@@ -186,14 +185,6 @@ class TestContentCrewAPI:
         assert len(sample_content_request.content_ideas) == 1
         assert sample_content_request.google_sheet_row["row_id"] == 1
 
-    def test_quick_trend_request_schema(self):
-        """Test QuickTrendRequest schema validation"""
-        request = QuickTrendRequest(
-            topic="sustainable fashion",
-            industry="fashion"
-        )
-        assert request.topic == "sustainable fashion"
-        assert request.industry == "fashion"
 
 class TestContentCrewIntegration:
     """Integration tests for the complete content crew workflow"""
