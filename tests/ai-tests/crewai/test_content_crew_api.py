@@ -87,40 +87,6 @@ class TestContentCrewAPI:
         assert "check_status_url" in data
         assert data["status"] == "task_started"
 
-        # Test status check
-        task_id = data["task_id"]
-        status_response = client.get(f"/api/v1/content/status/{task_id}")
-
-        assert status_response.status_code == 200
-        status_data = status_response.json()
-
-        assert "status" in status_data
-        assert "progress" in status_data
-        assert status_data["status"] in ["pending", "processing", "completed", "failed"]
-
-    def test_quick_trends_endpoint(self):
-        """Test quick trends analysis endpoint"""
-        payload = {
-            "topic": "sustainable technology",
-            "industry": "technology"
-        }
-
-        response = client.post("/api/v1/content/quick-trends", json=payload)
-
-        assert response.status_code == 200
-        data = response.json()
-
-        assert "topic" in data
-        assert "industry" in data
-        assert "general_trends" in data
-        assert "social_trends" in data
-        assert "status" in data
-
-        assert data["topic"] == "sustainable technology"
-        assert data["industry"] == "technology"
-        assert data["status"] == "success"
-        assert len(data["general_trends"]) > 0
-        assert len(data["social_trends"]) > 0
 
     def test_health_check_endpoint(self):
         """Test content service health check"""
@@ -206,24 +172,7 @@ class TestContentCrewAPIValidation:
         # Should return validation error
         assert response.status_code == 422
 
-    def test_invalid_task_id_status_check(self):
-        """Test status check with invalid task ID"""
-        response = client.get("/api/v1/content/status/invalid-task-id")
 
-        assert response.status_code == 404
-        data = response.json()
-        assert "detail" in data
-
-    def test_invalid_quick_trends_request(self):
-        """Test quick trends with invalid request"""
-        payload = {
-            # Missing topic field
-            "industry": "technology"
-        }
-
-        response = client.post("/api/v1/content/quick-trends", json=payload)
-
-        assert response.status_code == 422
 
     def test_content_creation_with_invalid_json(self):
         """Test content creation with completely invalid JSON"""
@@ -306,24 +255,6 @@ class TestContentCrewAPIEdgeCases:
         assert len(processed_idea["original_idea"]["keywords"]) == 5
         assert len(processed_idea["original_idea"]["competitors"]) == 3
 
-    def test_quick_trends_various_industries(self):
-        """Test quick trends across various industries"""
-        industries = ["technology", "healthcare", "finance", "retail", "education"]
-
-        for industry in industries:
-            payload = {
-                "topic": "AI innovation",
-                "industry": industry
-            }
-
-            response = client.post("/api/v1/content/quick-trends", json=payload)
-
-            assert response.status_code == 200
-            data = response.json()
-
-            assert data["industry"] == industry
-            assert data["status"] == "success"
-            assert len(data["general_trends"]) > 0
 
     def test_concurrent_api_requests(self):
         """Test handling of concurrent API requests"""
@@ -393,24 +324,6 @@ class TestContentCrewAPIPerformance:
         assert "processing_time" in data
         assert isinstance(data["processing_time"], (int, float))
 
-    def test_quick_trends_response_time(self):
-        """Test response time for quick trends endpoint"""
-        import time
-
-        payload = {
-            "topic": "AI trends",
-            "industry": "technology"
-        }
-
-        start_time = time.time()
-        response = client.post("/api/v1/content/quick-trends", json=payload)
-        end_time = time.time()
-
-        assert response.status_code == 200
-
-        response_time = end_time - start_time
-        # Quick trends should be faster than full content creation
-        assert response_time < 30  # 30 seconds max for quick trends
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

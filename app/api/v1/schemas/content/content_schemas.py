@@ -78,35 +78,6 @@ class ContentCreationResponse(BaseModel):
             }
         }
 
-class QuickTrendRequest(BaseModel):
-    topic: str = Field(..., description="Topic to analyze trends for")
-    industry: str = Field(default="general", description="Industry context")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "topic": "sustainable fashion",
-                "industry": "fashion"
-            }
-        }
-
-class QuickTrendResponse(BaseModel):
-    topic: str = Field(..., description="The analyzed topic")
-    industry: str = Field(..., description="Industry context")
-    general_trends: str = Field(..., description="General trend insights")
-    social_trends: str = Field(..., description="Social media trend insights")
-    status: str = Field(..., description="Status of the trend analysis")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "topic": "sustainable fashion",
-                "industry": "fashion",
-                "general_trends": "Sustainable fashion is trending with focus on eco-friendly materials...",
-                "social_trends": "High engagement on sustainable fashion content, trending hashtags...",
-                "status": "success"
-            }
-        }
 
 class AsyncTaskResponse(BaseModel):
     task_id: str = Field(..., description="Unique identifier for the async task")
@@ -119,24 +90,5 @@ class AsyncTaskResponse(BaseModel):
                 "task_id": "12345-abcde-67890",
                 "status": "task_started",
                 "check_status_url": "/api/v1/content/status/12345-abcde-67890"
-            }
-        }
-
-class TaskStatusResponse(BaseModel):
-    status: str = Field(..., description="Current status of the task")
-    progress: int = Field(..., description="Progress percentage (0-100)")
-    result: Optional[Dict] = Field(None, description="Task result when completed")
-    errors: List[str] = Field(default=[], description="List of errors encountered")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "status": "completed",
-                "progress": 100,
-                "result": {
-                    "processed_ideas": [],
-                    "errors": []
-                },
-                "errors": []
             }
         }
