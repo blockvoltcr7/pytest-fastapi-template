@@ -63,7 +63,7 @@ Railway CLI can be authenticated using tokens by setting environment variables:
   - **Team Token:** Allows actions on projects within the scoped workspace (cannot run `railway whoami` or `railway link` to other workspaces).
   - Example: `RAILWAY_API_TOKEN=your_api_token railway init`
 
-*Note: `RAILWAY_TOKEN` takes precedence if both are set.* 
+*Note: `RAILWAY_TOKEN` takes precedence if both are set.*
 
 ### Logout
 ```bash
@@ -268,7 +268,7 @@ railway down --yes
 ```
 
 ### Rollback Deployment (Legacy - use `railway down` or `redeploy`)
-*The `railway rollback <deployment-id>` command is not prominent in recent CLI versions. 
+*The `railway rollback <deployment-id>` command is not prominent in recent CLI versions.
 Prefer using `railway down` to remove a bad deployment or `railway redeploy` to re-trigger a known good one. Check the Railway dashboard for specific deployment history and rollback options.*
 
 ## Domain Management
@@ -566,4 +566,4 @@ PORT=8000
 
 ---
 
-*This reference covers Railway CLI v3.x - check `railway --version` for your current version* 
+*This reference covers Railway CLI v3.x - check `railway --version` for your current version*
