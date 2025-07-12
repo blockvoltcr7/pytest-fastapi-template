@@ -1,0 +1,64 @@
+{
+  "content_ideas": [
+    {
+      "competitors": [
+        "contentmarketinginstitute.com",
+        "copyblogger.com"
+      ],
+      "content_type": "blog post",
+      "industry": "marketing",
+      "keywords": [
+        "AI content",
+        "marketing automation"
+      ],
+      "target_audience": "marketing professionals",
+      "topic": "AI Tools for Content Marketing"
+    },
+    {
+      "competitors": [
+        "hubspot.com",
+        "zapier.com"
+      ],
+      "content_type": "case study",
+      "industry": "SaaS",
+      "keywords": [
+        "workflow automation",
+        "case study",
+        "business efficiency"
+      ],
+      "target_audience": "startup founders",
+      "topic": "How SaaS Startups Automate Workflows to Scale Fast"
+    },
+    {
+      "competitors": [
+        "buffer.com",
+        "hootsuite.com"
+      ],
+      "content_type": "social media thread",
+      "industry": "social media",
+      "keywords": [
+        "engagement hacks",
+        "content calendar"
+      ],
+      "target_audience": "social media managers",
+      "topic": "5 Viral Social Media Content Strategies for 2025"
+    },
+    {
+      "competitors": [
+        "verywellfit.com"
+      ],
+      "content_type": "newsletter",
+      "industry": "health & wellness",
+      "keywords": [
+        "habit tracking",
+        "biohacking"
+      ],
+      "target_audience": "health enthusiasts",
+      "topic": "Biohacking Habits for Busy Professionals"
+    }
+  ],
+  "google_sheet_row": {
+    "row_id": 42,
+    "source": "google_sheets"
+  }
+}
